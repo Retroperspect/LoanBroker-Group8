@@ -10,7 +10,7 @@ namespace Loaner
     {
         static void Main(string[] args)
         {
-            RabbitMQManager MQ = new RabbitMQManager("207.154.250.196");
+            RabbitMQManager MQ = new RabbitMQManager("138.197.186.82");
             while (true)
             {
                 MQ.WorkerSendMessage("RequestLoan", Encoding.UTF8.GetBytes("170294-1837"));

@@ -18,17 +18,17 @@ namespace GetCreditScore
 
         static void Main(string[] args)
         {
-            Program p = new Program();
-            p.receiveMessage();
-            CreditScoreService.CreditScoreServiceClient client = new CreditScoreService.CreditScoreServiceClient();
-            Console.WriteLine(p.messagesa);
-            Console.ReadLine();
-
+            while (true)
+            {
+                Program p = new Program();
+                p.receiveMessage();
+                CreditScoreService.CreditScoreServiceClient client = new CreditScoreService.CreditScoreServiceClient();
+            }
         }
 
         private void sendEnriched(byte[] body)
         {
-            var factory = new ConnectionFactory() { HostName = "207.154.250.196", UserName = "admin", Password = "password" };
+            var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
@@ -47,12 +47,10 @@ namespace GetCreditScore
 
             }
 
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
         }
         private void receiveMessage()
         {
-            var factory = new ConnectionFactory() { HostName = "207.154.250.196" , UserName= "admin", Password= "password" };
+            var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName= "admin", Password= "password" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
@@ -62,7 +60,7 @@ namespace GetCreditScore
                                      autoDelete: false,
                                      arguments: null);
 
-                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                channel.BasicQos(0, 1, false);
 
                 Console.WriteLine(" [*] Waiting for messages.");
 
@@ -72,14 +70,14 @@ namespace GetCreditScore
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                     Console.WriteLine(" [x] Received {0}", message);
-
+                    
                     CreditScoreService.CreditScoreServiceClient client = new CreditScoreService.CreditScoreServiceClient();
                     int l = client.creditScore(message);
                     Console.WriteLine(l);
                     message = message +" - " +l;
                     sendEnriched(Encoding.UTF8.GetBytes(message));
+                    
                     ///// send anotehr message to another channel 
-
                     Console.WriteLine(" [x] Done");
 
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
@@ -87,6 +85,7 @@ namespace GetCreditScore
                 channel.BasicConsume(queue: "RequestLoan",
                                      autoAck: false,
                                      consumer: consumer);
+
                 Console.WriteLine(" Press [enter] to exit.");
                 Console.ReadLine();
             }

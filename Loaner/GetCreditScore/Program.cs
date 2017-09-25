@@ -33,7 +33,7 @@ namespace GetCreditScore
             using (var channel = connection.CreateModel())
             {
                 //Declares a que
-                channel.QueueDeclare(queue: "CreditEnriched", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                channel.QueueDeclare(queue: "RequestWithCredit", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
 
                 var properties = channel.CreateBasicProperties();
@@ -41,7 +41,7 @@ namespace GetCreditScore
 
 
                 //Publish Message
-                channel.BasicPublish(exchange: "", routingKey: "CreditEnriched", basicProperties: null, body: body);
+                channel.BasicPublish(exchange: "", routingKey: "RequestWithCredit", basicProperties: null, body: body);
                 Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 

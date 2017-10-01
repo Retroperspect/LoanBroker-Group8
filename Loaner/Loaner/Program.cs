@@ -13,7 +13,8 @@ namespace Loaner
             RabbitMQManager MQ = new RabbitMQManager("138.197.186.82");
             while (true)
             {
-                MQ.WorkerSendMessage("RequestLoan", Encoding.UTF8.GetBytes("170294-1837"));
+                LoanRequest lr = new LoanRequest() {ssn= "170294-1837", LoanDuration = TimeSpan.FromDays(350).ToString(), LoanAmmount = 10000 };
+                MQ.WorkerSendMessage("RequestLoan", Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(lr)));
                 Console.ReadLine();
             }
            

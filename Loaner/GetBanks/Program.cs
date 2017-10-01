@@ -8,16 +8,10 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
 using System.Threading;
 
-
-
-
-namespace GetCreditScore
+namespace GetBanks
 {
     class Program
     {
-        
-        public string messagesa;
-
         static void Main(string[] args)
         {
             while (true)
@@ -25,17 +19,12 @@ namespace GetCreditScore
                 RabbitManager rm = new RabbitManager();
                 rm.receiveMessage();
             }
+
+
         }
 
+
+
         
-
-
-
-
-
-
-
     }
-
-    
 }

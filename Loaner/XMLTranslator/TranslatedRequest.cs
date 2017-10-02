@@ -16,7 +16,7 @@ namespace XMLTranslator
         [XmlElement("creditScore")]
         public int creditScore { get; set; }
         [XmlElement("loanAmount")]
-        public float LoanAmmount { get; set; }
+        public float LoanAmount { get; set; }
         [XmlElement("loanDuration")]
         public string LoanDuration { get; set; }
     }

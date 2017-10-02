@@ -10,9 +10,9 @@ namespace JSONTranslator
     public class LoanRequest
     {
         public string ssn { get; set; }
-        public int creditScore { get; set; }
-        public double LoanAmmount { get; set; }
         public string LoanDuration { get; set; }
+        public double LoanAmmount { get; set; }
+        public int CreditScore { get; set; }
 
 
 

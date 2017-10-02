@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XMLTranslator
+namespace JSONTranslator
 {
     class RabbitManager
     {
@@ -48,7 +48,7 @@ namespace XMLTranslator
                 using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: "XML",
+                    channel.QueueDeclare(queue: "JSON",
                                          durable: true,
                                          exclusive: false,
                                          autoDelete: false,
@@ -71,16 +71,16 @@ namespace XMLTranslator
 
                         var mes = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
 
-
+                        
                         //////TRANSLATION COMENCE!!!
                         TimeSpan duration = TimeSpan.Parse(mes.LoanDuration);
-                        DateTime UnixZero = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                        DateTime Duration = UnixZero.Add(duration);
-                        string TranslatedDuration = Duration.ToString("yyyy-MM-dd H:mm:ss CET");
-                        TranslatedRequest Request = new TranslatedRequest() { ssn = mes.ssn.Replace("-", ""), creditScore = mes.creditScore, LoanAmmount = (float)mes.LoanAmmount, LoanDuration = TranslatedDuration };
+                        double res = double.Parse(duration.Days.ToString()) / 30.436875;
+                        int ress = (int)res;
+                        string TranslatedDuration = ress.ToString();
+                        TranslatedRequest Request = new TranslatedRequest() { ssn = mes.ssn.Replace("-", ""), creditScore = mes.CreditScore, loanAmount = (decimal)mes.LoanAmmount, loanDuration = TranslatedDuration };
 
                         
-                        var message = Encoding.UTF8.GetBytes( Serializer.SerializeObjectToXml(Request) );
+                        var message = Encoding.UTF8.GetBytes( Serializer.JSONSerializeObject(Request) );
 
                         string input;
                         string output;
@@ -104,7 +104,7 @@ namespace XMLTranslator
 
                         channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                     };
-                    channel.BasicConsume(queue: "XML",
+                    channel.BasicConsume(queue: "JSON",
                                          autoAck: false,
                                          consumer: consumer);
 

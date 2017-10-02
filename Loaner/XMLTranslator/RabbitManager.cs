@@ -64,24 +64,25 @@ namespace XMLTranslator
                         var body = ea.Body;
                         var header = ea.BasicProperties.Headers;
 
-
-
-                        // 
-
-
+                        //// The untranslated message!!!
                         var mes = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
 
-
+                        Console.WriteLine( mes.CreditScore + "--------------------------------");
                         //////TRANSLATION COMENCE!!!
                         TimeSpan duration = TimeSpan.Parse(mes.LoanDuration);
                         DateTime UnixZero = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                         DateTime Duration = UnixZero.Add(duration);
                         string TranslatedDuration = Duration.ToString("yyyy-MM-dd H:mm:ss CET");
-                        TranslatedRequest Request = new TranslatedRequest() { ssn = mes.ssn.Replace("-", ""), creditScore = mes.creditScore, LoanAmmount = (float)mes.LoanAmmount, LoanDuration = TranslatedDuration };
-
-                        
+                        TranslatedRequest Request = new TranslatedRequest(); /*{ ssn = mes.ssn.Replace("-", ""), creditScore = mes.creditScore, LoanAmount = (float)mes.LoanAmmount, LoanDuration = TranslatedDuration };*/
+                        Request.ssn = mes.ssn.Replace("-", "");
+                        Request.creditScore = mes.CreditScore;
+                        Request.LoanAmount = (float)mes.LoanAmmount;
+                        Request.LoanDuration = TranslatedDuration;
+                        ///// Message translated to correct format.
                         var message = Encoding.UTF8.GetBytes( Serializer.SerializeObjectToXml(Request) );
+                        Console.WriteLine(Request.creditScore + "--REQ-------------------------");
 
+                        /// Now to put destination and reply channel into header for easy sending.
                         string input;
                         string output;
                         try
@@ -90,12 +91,12 @@ namespace XMLTranslator
                             input = Encoding.UTF8.GetString((byte[])ea.BasicProperties.Headers["in"]);
                             output = Encoding.UTF8.GetString((byte[])ea.BasicProperties.Headers["reply"]);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             input = "InvalidBank";
                             output = "InvalidBank";
                         }
-
+                        //// TRANSLATION DONE!
                         /// send translated message with destination and reply destination
                         sendEnriched(message, input, output);
 

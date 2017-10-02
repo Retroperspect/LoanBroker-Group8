@@ -5,19 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace XMLTranslator
+
+namespace JSONTranslator
 {
-    [Serializable]
-    [XmlRoot("LoanRequest")]
+    
     public class TranslatedRequest
     {
-        [XmlElement("ssn")]
         public string ssn { get; set; }
-        [XmlElement("creditScore")]
+
         public int creditScore { get; set; }
-        [XmlElement("loanAmount")]
-        public float LoanAmmount { get; set; }
-        [XmlElement("loanDuration")]
-        public string LoanDuration { get; set; }
+
+        public decimal loanAmount { get; set; }
+
+        public string loanDuration { get; set; }
     }
 }

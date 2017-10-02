@@ -10,6 +10,11 @@ namespace JSONTranslator
     {
         static void Main(string[] args)
         {
+            while (true)
+            {
+                RabbitManager rm = new RabbitManager();
+                rm.receiveMessage();
+            }
         }
     }
 }

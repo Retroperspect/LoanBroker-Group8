@@ -1,4 +1,5 @@
 ﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Content;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GetBanks
+namespace RecipientList_Router
 {
     class RabbitManager
     {
@@ -14,22 +15,22 @@ namespace GetBanks
 
 
 
-            public void sendEnriched(byte[] body)
+            public void sendEnriched(byte[] body, Bank banktosend)
             {
                 var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
                 using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {
                     //Declares a que
-                    channel.QueueDeclare(queue: "RequestWithBanks", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                    channel.QueueDeclare(queue: banktosend.format, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
 
                     var properties = channel.CreateBasicProperties();
-                    properties.Persistent = true;
-
-
-                    //Publish Message
-                    channel.BasicPublish(exchange: "", routingKey: "RequestWithBanks", basicProperties: null, body: body);
+                    properties.Headers = new Dictionary<string, object>();
+                    properties.Headers["in"] = banktosend.Input;
+                    properties.Headers["reply"] = banktosend.Output;
+                //Publish Message
+                channel.BasicPublish(exchange: "", routingKey: banktosend.format, basicProperties: properties, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 
@@ -42,7 +43,7 @@ namespace GetBanks
                 using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: "RequestWithCredit",
+                    channel.QueueDeclare(queue: "RequestWithBanks",
                                          durable: true,
                                          exclusive: false,
                                          autoDelete: false,
@@ -56,32 +57,28 @@ namespace GetBanks
                     consumer.Received += (model, ea) =>
                     {
                         var body = ea.Body;
+                        
 
 
-                        LoanRequest NoCredits = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
-                        ServiceReference1.Service1Client client = new ServiceReference1.Service1Client();
-                        ServiceReference1.Banks[] _ViableBanks = client.GetBanks(NoCredits.CreditScore);
-                        LoanRequestWithBanks LoanWithBanks = new LoanRequestWithBanks() { ssn = NoCredits.ssn, LoanDuration = NoCredits.LoanDuration, CreditScore = NoCredits.CreditScore, LoanAmmount = NoCredits.LoanAmmount, ViableBanks = new List<Bank>() };
+                        LoanRequestWithBanks FullRequest = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
 
-                        foreach (var item in _ViableBanks)
+                        foreach (var bank in FullRequest.ViableBanks)
                         {
-                            LoanWithBanks.ViableBanks.Add(new Bank() { format = item.format, Input = item.Input, Output=item.Output });
+
+                            var message = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = FullRequest.ssn, CreditScore = FullRequest.CreditScore, LoanAmmount = FullRequest.LoanAmmount, LoanDuration = FullRequest.LoanDuration});
+                            sendEnriched(Encoding.UTF8.GetBytes(message), bank);
+
                         }
-                        
 
                         
-                        Console.WriteLine(" [x] Received {0}");
-
-
-                        var message = Serializer.SerializeObjectToXml(LoanWithBanks);
-                        sendEnriched(Encoding.UTF8.GetBytes(message));
+                        
 
                         ///// send anotehr message to another channel 
                         Console.WriteLine(" [x] Done");
 
                         channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                     };
-                    channel.BasicConsume(queue: "RequestWithCredit",
+                    channel.BasicConsume(queue: "RequestWithBanks",
                                          autoAck: false,
                                          consumer: consumer);
 

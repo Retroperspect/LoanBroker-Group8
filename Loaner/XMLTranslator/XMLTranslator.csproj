@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4C1817FF-71A1-4D90-A6A7-E21D34B6DF4F}</ProjectGuid>
+    <ProjectGuid>{E5A92182-7FE7-4800-A45D-58C6875018ED}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>RecipientList_Router</RootNamespace>
-    <AssemblyName>RecipientList-Router</AssemblyName>
+    <RootNamespace>XMLTranslator</RootNamespace>
+    <AssemblyName>XMLTranslator</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -48,13 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bank.cs" />
     <Compile Include="LoanRequest.cs" />
-    <Compile Include="LoanRequestWithBanks.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitManager.cs" />
     <Compile Include="Serializer.cs" />
+    <Compile Include="TranslatedRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

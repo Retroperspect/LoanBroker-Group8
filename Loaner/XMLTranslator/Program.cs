@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipientList_Router
+namespace XMLTranslator
 {
     class Program
     {
@@ -16,7 +16,6 @@ namespace RecipientList_Router
                 RabbitManager rm = new RabbitManager();
                 rm.receiveMessage();
             }
-
         }
     }
 }

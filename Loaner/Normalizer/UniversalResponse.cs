@@ -11,6 +11,5 @@ namespace Normalizer
     {
         public string ssn { get; set; }
         public decimal interestrate { get; set; }
-
     }
 }

@@ -1,91 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using System.Web.Script.Serialization;
 
-//work on datatype
 namespace Normalizer
 {
     class Serializer
     {
         public static string SerializeObjectToXml(object t)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(LoanRequest));
-
+            XmlSerializer xml = new XmlSerializer(typeof(UniversalResponse));
+            
             using (StringWriter textwriter = new StringWriter())
             {
+                
                 xml.Serialize(textwriter, t);
                 return textwriter.ToString();
             }
         }
 
-        /// <summary>
-        /// Standard XML Deserializer
-        /// </summary>
-        /// <param name="Message">LoanRequestFromBank XML Message</param>
-        /// <returns>LoanRequestFromBank converted to LoanRequest</returns>
-        public static LoanRequest DeserializeObjectFromXml(string Message)
-        {
-            XmlSerializer dexml = new XmlSerializer(typeof(LoanRequest));
-            using (TextReader reader = new StringReader(Message))
-            {
-                return (LoanRequest)dexml.Deserialize(reader);
-            }
-
-        }
-
-        public static UniversalResponse DeserializeObjectFromXmlSchoolBank(string Message)
+        public static XMLCPHBankClass DeserializeObjectFromXmlCPH(string xml)
         {
             XmlSerializer dexml = new XmlSerializer(typeof(XMLCPHBankClass));
-            using (TextReader reader = new StringReader(Message))
-            {
-                var medium = (XMLCPHBankClass)dexml.Deserialize(reader);
-                return new UniversalResponse() { interestrate = medium.interestRate, ssn = medium.ssn };
-            }
-
+            using (TextReader reader = new StringReader(xml)) { return (XMLCPHBankClass)dexml.Deserialize(reader); }
         }
-
-        public static LoanRequest DeserializeObjectFromXmlStudentBank(string Message)
+        public static GoBankResponse DeserializeObjectFromXmlGo(string xml)
         {
-            XmlSerializer dexml = new XmlSerializer(typeof(LoanRequest));
-            using (TextReader reader = new StringReader(Message))
-            {
-                return (LoanRequest)dexml.Deserialize(reader);
-            }
-
+            XmlSerializer dexml = new XmlSerializer(typeof(GoBankResponse));
+            using (TextReader reader = new StringReader(xml)) { return (GoBankResponse)dexml.Deserialize(reader); }
         }
 
-        /// <summary>
-        /// not implemented yet
-        /// </summary>
-        /// <param name="Message"></param>
-        /// <returns></returns>
-        public static UniversalResponse DeserializeObjectFromJsonSchoolBank(string Message)
+        public static JSONResponse DeserializeObjectFromJSONCPH(string xml)
         {
-            var medium = new JavaScriptSerializer().Deserialize<JSONResponse>(Message);
-            return new UniversalResponse() { interestrate = medium.interestRate, ssn = medium.ssn };
-
+            return new JavaScriptSerializer().Deserialize<JSONResponse>(xml);
         }
 
-        internal static object SerializeObjectToXml(string v, LoanRequest loanRequest)
-        {
-            throw new NotImplementedException();
-        }
     }
 
-        /// <summary>
-        /// not implemented yet
-        /// </summary>
-        /// <param name="Message"></param>
-        /// <returns></returns>
-        public static LoanRequest DeserializeObjectFromJsonStudentBank(string Message)
-        {
-            return null;
-        }
-    }
+
+
+
 }

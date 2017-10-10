@@ -15,7 +15,7 @@ namespace JSONTranslator
 
 
 
-            public void sendEnriched(byte[] body, string quename, string replyque)
+            public void sendEnriched(byte[] body, string quename, string replyque, IBasicProperties basic)
             {
             ConnectionFactory factory;
             if (quename == "cphbusiness.bankJSON")
@@ -31,13 +31,15 @@ namespace JSONTranslator
                     
 
                     /////
-                    var correlationId = Guid.NewGuid().ToString();
+                    
                     var properties = channel.CreateBasicProperties();
+                    properties.Headers = new Dictionary<string, object>();
                     properties.Persistent = true;
                     properties.ReplyTo = Que.QueueName;
-                    properties.CorrelationId = correlationId;
-                    
-                    IMapMessageBuilder b = new MapMessageBuilder(channel);
+                    properties.CorrelationId = basic.CorrelationId;
+                    properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
+
+                IMapMessageBuilder b = new MapMessageBuilder(channel);
 
                     //Publish Message
                     channel.BasicPublish(exchange: quename, routingKey: "", basicProperties: properties, body: body);
@@ -102,7 +104,7 @@ namespace JSONTranslator
                         }
 
                         /// send translated message with destination and reply destination
-                        sendEnriched(message, input, output);
+                        sendEnriched(message, input, output, ea.BasicProperties);
 
                         ///// send anotehr message to another channel 
                         Console.WriteLine(" [x] Done");

@@ -14,7 +14,7 @@ namespace GetBanks
 
 
 
-            public void sendEnriched(byte[] body)
+            public void sendEnriched(byte[] body, IBasicProperties basic, int BanksAmount)
             {
                 var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
                 using (var connection = factory.CreateConnection())
@@ -25,11 +25,15 @@ namespace GetBanks
 
 
                     var properties = channel.CreateBasicProperties();
+                    properties.Headers = new Dictionary<string, object>();
                     properties.Persistent = true;
+                    properties.CorrelationId = basic.CorrelationId;
+                    properties.Headers["Requests"] = BanksAmount.ToString();
+                    properties.ContentType = "Class of LoanRequestWithBanks.";
+                    
 
-
-                    //Publish Message
-                    channel.BasicPublish(exchange: "", routingKey: "RequestWithBanks", basicProperties: null, body: body);
+                //Publish Message
+                channel.BasicPublish(exchange: "", routingKey: "RequestWithBanks", basicProperties: properties, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 
@@ -74,7 +78,7 @@ namespace GetBanks
 
 
                         var message = Serializer.SerializeObjectToXml(LoanWithBanks);
-                        sendEnriched(Encoding.UTF8.GetBytes(message));
+                        sendEnriched(Encoding.UTF8.GetBytes(message), ea.BasicProperties, _ViableBanks.Count());
 
                         ///// send anotehr message to another channel 
                         Console.WriteLine(" [x] Done");

@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GoBankResponse.cs" />
     <Compile Include="JSONResponse.cs" />
     <Compile Include="LoanRequest.cs" />
     <Compile Include="Program.cs" />

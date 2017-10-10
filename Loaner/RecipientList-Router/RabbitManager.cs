@@ -15,7 +15,7 @@ namespace RecipientList_Router
 
 
 
-            public void sendEnriched(byte[] body, Bank banktosend)
+            public void sendEnriched(byte[] body, Bank banktosend, IBasicProperties basic)
             {
                 var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
                 using (var connection = factory.CreateConnection())
@@ -27,8 +27,11 @@ namespace RecipientList_Router
 
                     var properties = channel.CreateBasicProperties();
                     properties.Headers = new Dictionary<string, object>();
+                    properties.CorrelationId = basic.CorrelationId;
+                    properties.ContentType = "Class of LoanRequest.";
                     properties.Headers["in"] = banktosend.Input;
                     properties.Headers["reply"] = banktosend.Output;
+                    properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
                 //Publish Message
                 channel.BasicPublish(exchange: "", routingKey: banktosend.format, basicProperties: properties, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
@@ -66,7 +69,7 @@ namespace RecipientList_Router
                         {
 
                             var message = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = FullRequest.ssn, CreditScore = FullRequest.CreditScore, LoanAmmount = FullRequest.LoanAmmount, LoanDuration = FullRequest.LoanDuration});
-                            sendEnriched(Encoding.UTF8.GetBytes(message), bank);
+                            sendEnriched(Encoding.UTF8.GetBytes(message), bank, ea.BasicProperties);
 
                         }
 

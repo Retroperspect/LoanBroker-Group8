@@ -14,7 +14,7 @@ namespace GetCreditScore
 
 
 
-            public void sendEnriched(byte[] body)
+            public void sendEnriched(byte[] body, IBasicProperties basic)
             {
                 var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
                 using (var connection = factory.CreateConnection())
@@ -23,13 +23,14 @@ namespace GetCreditScore
                     //Declares a que
                     channel.QueueDeclare(queue: "RequestWithCredit", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-
+                    
                     var properties = channel.CreateBasicProperties();
                     properties.Persistent = true;
+                    properties.CorrelationId = basic.CorrelationId;
+                    properties.ContentType = "Class of LoanRequest.";
 
-
-                    //Publish Message
-                    channel.BasicPublish(exchange: "", routingKey: "RequestWithCredit", basicProperties: null, body: body);
+                //Publish Message
+                channel.BasicPublish(exchange: "", routingKey: "RequestWithCredit", basicProperties: properties, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 
@@ -61,7 +62,8 @@ namespace GetCreditScore
                         NoCredits.CreditScore = client.creditScore(NoCredits.ssn);
                         Console.WriteLine(" [x] Received {0}");
                         var message = Serializer.SerializeObjectToXml(NoCredits);
-                        sendEnriched(Encoding.UTF8.GetBytes(message));
+                        
+                        sendEnriched(Encoding.UTF8.GetBytes(message), ea.BasicProperties);
 
                         ///// send anotehr message to another channel 
                         Console.WriteLine(" [x] Done");

@@ -33,10 +33,10 @@ namespace Loaner
                 var properties = channel.CreateBasicProperties();
                 properties.Persistent = true;
                 properties.ContentType = "Class of LoanRequest.";
-
+                properties.CorrelationId = Guid.NewGuid().ToString();
 
                 //Publish Message
-                channel.BasicPublish(exchange: "", routingKey: Que_name, basicProperties: null, body: body);
+                channel.BasicPublish(exchange: "", routingKey: Que_name, basicProperties: properties, body: body);
                 Console.WriteLine(" [x] Sent {0}");
 
 

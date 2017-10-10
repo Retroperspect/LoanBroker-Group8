@@ -38,7 +38,6 @@ namespace JSONTranslator
         public static string JSONSerializeObject(object t)
         {
             return new JavaScriptSerializer().Serialize(t);
-
         }
     }
 }

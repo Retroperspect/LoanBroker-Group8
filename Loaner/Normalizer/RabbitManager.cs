@@ -11,8 +11,18 @@ namespace Normalizer
 {
     class RabbitManager
     {
+        private string[] connection;
+        private string responseque;
+
+        public RabbitManager(string[] con, string response)
+        {
+            connection = con;
+            responseque = response;
+        }
+        
+
         //Remake into sending a enriched body to the aggregator
-        public void sendEnriched(byte[] body, string messagetoreturn)
+        public void sendEnriched(byte[] body, string messagetoreturn, IBasicProperties basic)
         {
             var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
             using (var connection = factory.CreateConnection())
@@ -24,9 +34,12 @@ namespace Normalizer
 
                 var properties = channel.CreateBasicProperties();
                 properties.Headers = new Dictionary<string, object>();
-                //properties.Headers["in"] = messagetoreturn.Input;
-                //properties.Headers["reply"] = messagetoreturn.Output;
-                //Publish Message
+                properties.Persistent = true;
+                properties.CorrelationId = basic.CorrelationId;
+                properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
+
+
+
                 channel.BasicPublish(exchange: "", routingKey: messagetoreturn, basicProperties: properties, body: body);
                 Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
@@ -38,11 +51,11 @@ namespace Normalizer
         //Remake and add logic to figure out which bank send the message
         public void receiveMessage()
         {
-            var factory = new ConnectionFactory() { HostName = "datdb.cphbusiness.dk", UserName = "guest", Password = "guest" };
+            var factory = new ConnectionFactory() { HostName = connection[0], UserName = connection[1], Password = connection[2] };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "Group8-LoanBroker-Request",
+                channel.QueueDeclare(queue: responseque,
                                      durable: true,
                                      exclusive: false,
                                      autoDelete: false,
@@ -55,62 +68,50 @@ namespace Normalizer
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
-                    var header = ea.BasicProperties.Headers;
                     var body = ea.Body;
 
-                    //this check which bank that the Normalizer received and direct the message to the correct Deserializer
+
+                    byte[] messages = Encoding.UTF8.GetBytes("WrongSHIT!");
+
+
                     try
                     {
-                        switch (Encoding.UTF8.GetString((byte[])header["bank"]))
-                        {
-                            case "xml":
-                                
-                                LoanRequest XmlRequest = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
-                                var messageXmlRequest = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = XmlRequest.ssn, CreditScore = XmlRequest.CreditScore, LoanAmmount = XmlRequest.LoanAmmount, LoanDuration = XmlRequest.LoanDuration });
-                                Console.WriteLine("received {0}", messageXmlRequest);
-                                sendEnriched(Encoding.UTF8.GetBytes(messageXmlRequest), "LoanReturn");
-                                break;
-                            case "school-bank-xml":
-                                LoanRequest SchoolBankXmlRequest = Serializer.DeserializeObjectFromXmlSchoolBank(Encoding.UTF8.GetString(body));
-                                var messageSchoolBankXmlRequest = Serializer.SerializeObjectToXml( ,new LoanRequest() { ssn = SchoolBankXmlRequest.ssn, CreditScore = SchoolBankXmlRequest.CreditScore, LoanAmmount = SchoolBankXmlRequest.LoanAmmount, LoanDuration = SchoolBankXmlRequest.LoanDuration });
-                                Console.WriteLine("received {0}", messageSchoolBankXmlRequest);
-                                sendEnriched(Encoding.UTF8.GetBytes(messageSchoolBankXmlRequest), "LoanReturn");
-                                break;
-                            case "school-bank-json":
-                                LoanRequest SchoolBankJsonRequest = Serializer.DeserializeObjectFromJsonSchoolBank(Encoding.UTF8.GetString(body));
-                                var messageSchoolBankJsonRequest = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = SchoolBankJsonRequest.ssn, CreditScore = SchoolBankJsonRequest.CreditScore, LoanAmmount = SchoolBankJsonRequest.LoanAmmount, LoanDuration = SchoolBankJsonRequest.LoanDuration });
-                                Console.WriteLine("received {0}", messageSchoolBankJsonRequest);
-                                sendEnriched(Encoding.UTF8.GetBytes(messageSchoolBankJsonRequest), "LoanReturn");
-                                break;
-                            case "student-bank-xml":
-                                LoanRequest StudentBankXmlRequest = Serializer.DeserializeObjectFromXmlStudentBank(Encoding.UTF8.GetString(body));
-                                var messageStudentBankXmlRequest = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = StudentBankXmlRequest.ssn, CreditScore = StudentBankXmlRequest.CreditScore, LoanAmmount = StudentBankXmlRequest.LoanAmmount, LoanDuration = StudentBankXmlRequest.LoanDuration });
-                                Console.WriteLine("received {0}", messageStudentBankXmlRequest);
-                                sendEnriched(Encoding.UTF8.GetBytes(messageStudentBankXmlRequest), "LoanReturn");
-                                break;
-                            case "student-bank-json":
-                                LoanRequest StudentBankJsonRequest = Serializer.DeserializeObjectFromJsonStudentBank(Encoding.UTF8.GetString(body));
-                                var messageStudentBankJsonRequest = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = StudentBankJsonRequest.ssn, CreditScore = StudentBankJsonRequest.CreditScore, LoanAmmount = StudentBankJsonRequest.LoanAmmount, LoanDuration = StudentBankJsonRequest.LoanDuration });
-                                Console.WriteLine("received {0}", messageStudentBankJsonRequest);
-                                sendEnriched(Encoding.UTF8.GetBytes(messageStudentBankJsonRequest), "LoanReturn");
-                                break;
-                            default:
-                                Console.WriteLine("no bank was specified in the deserialise message");
-                                break;
-                        }
-                    }
-                    catch (Exception e)
+                        XMLCPHBankClass cph = Serializer.DeserializeObjectFromXmlCPH(Encoding.UTF8.GetString(body));
+                        UniversalResponse UR = new UniversalResponse() { ssn = cph.ssn, interestrate = cph.interestRate };
+
+                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(UR));
+                    }catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with XMLCPH error: " + e.ToString()); }
+                    try
                     {
-                        Console.WriteLine("ain't no Object in that channel with [bank] as a header error was {0}", e);
-                        //throw;
+                        JSONResponse json = Serializer.DeserializeObjectFromJSONCPH(Encoding.UTF8.GetString(body));
+                        UniversalResponse UR = new UniversalResponse() { ssn = json.ssn, interestrate = json.interestRate };
+
+                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(UR));
+                    } catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with JSONCPH error: " + e.ToString()); }
+                    try
+                    {
+                        GoBankResponse go = Serializer.DeserializeObjectFromXmlGo(Encoding.UTF8.GetString(body));
+                        UniversalResponse UR = new UniversalResponse() { ssn = go.ssn, interestrate = go.interestRate };
+
+                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(UR));
                     }
+                    catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with GOBANK error: " + e.ToString()); }
+
+
+                    ///
+                    /// ADD BANK HERE!!! 
+                    /// TRY CATCH IT AND MAKE ANOTHER PART IN THE SERIALIZER, ALSO ADD NEW CLASS FOR THE DATA STRUCTS!
+                    ///
+
+
+                    sendEnriched(messages, "Aggregator", ea.BasicProperties);
 
                     ///// send anotehr message to another channel 
                     Console.WriteLine(" [x] Done");
 
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 };
-                channel.BasicConsume(queue: "Group8-LoanBroker-Request",
+                channel.BasicConsume(queue: responseque,
                                      autoAck: false,
                                      consumer: consumer);
 

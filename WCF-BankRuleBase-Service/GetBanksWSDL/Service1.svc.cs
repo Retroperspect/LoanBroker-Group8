@@ -18,19 +18,19 @@ namespace GetBanksWSDL
 
             if (CreditScore > 200)
             {
-                results.Add(new Banks() { format = "XML", Input = "cphbusiness.bankXML", Output = "Group8_LoanBroker_ResponseQue" });
+                results.Add(new Banks() { format = "XML", Input = "cphbusiness.bankXML", Output = "Group8-LoanBroker-Request" });
             }
             if (CreditScore > 300)
             {
-                results.Add(new Banks() { format = "JSON", Input = "cphbusiness.bankJSON", Output = "Group8_LoanBroker_ResponseQue" });
+                results.Add(new Banks() { format = "JSON", Input = "cphbusiness.bankJSON", Output = "Group8-LoanBroker-Request" });
             }
             if (CreditScore > 400)
             {
-                results.Add(new Banks() { format = "XML", Input = "LoanRequestB1", Output = "cphbusiness.LoanBroker.Group8" });
+                results.Add(new Banks() { format = "XML", Input = "GoBankRequest", Output = "GoBankResponse" });
             }
             if (CreditScore > 600)
             {
-                results.Add(new Banks() { format = "XML", Input = "LoanRequestB2", Output = "cphbusiness.LoanBroker.Group8" });
+                results.Add(new Banks() { format = "XML", Input = "LoanRequestB2", Output = "Group8-LoanBroker-Request" });
             }
             return results;
         }

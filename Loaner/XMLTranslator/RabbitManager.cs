@@ -17,12 +17,14 @@ namespace XMLTranslator
 
             public void sendEnriched(byte[] body, string quename, string replyque)
             {
-                var factory = new ConnectionFactory() { HostName = "datdb.cphbusiness.dk", UserName = "guest", Password = "guest" };
+                ConnectionFactory factory;
+                if (quename == "cphbusiness.bankXML") { factory = new ConnectionFactory() { HostName = "datdb.cphbusiness.dk", UserName = "guest", Password = "guest" };
+                } else { factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" }; }
                 using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {
                     //Declares a que
-                    var Que = channel.QueueDeclare(queue: "Group8-LoanBroker-Request", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                    var Que = channel.QueueDeclare(queue: replyque, durable: true, exclusive: false, autoDelete: false, arguments: null);
                     
 
                     /////
@@ -33,11 +35,11 @@ namespace XMLTranslator
                     properties.CorrelationId = correlationId;
                     
                     IMapMessageBuilder b = new MapMessageBuilder(channel);
-
+                    
                     //Publish Message
                     channel.BasicPublish(exchange: quename, routingKey: "", basicProperties: properties, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
-
+                    
 
                 }
 

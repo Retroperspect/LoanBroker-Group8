@@ -15,9 +15,10 @@ namespace XMLTranslator
         public static string SerializeObjectToXml(object t)
         {
             XmlSerializer xml = new XmlSerializer(typeof(TranslatedRequest));
-
-            using (StringWriter textwriter = new StringWriter())
+            
+            using (Utf8StringWriter textwriter = new Utf8StringWriter())
             {
+                
                 xml.Serialize(textwriter, t);
                 return textwriter.ToString();
             }
@@ -33,4 +34,15 @@ namespace XMLTranslator
 
         }
     }
+
+    public class Utf8StringWriter : StringWriter
+    {
+        // Use UTF8 encoding but write no BOM to the wire
+        public override Encoding Encoding
+        {
+            get { return new UTF8Encoding(false); } // in real code I'll cache this encoding.
+        }
+    }
+
+
 }

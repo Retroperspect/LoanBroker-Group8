@@ -11,8 +11,6 @@ namespace Aggregator
 {
     class RabbitManager
     {
-        //list of currently handled loans
-        public List<LoanRequest> listOfLoans { get; set; }
 
         //Remake into sending a enriched body to the aggregator
         public void sendEnriched(byte[] body, string messagetoreturn)
@@ -45,7 +43,7 @@ namespace Aggregator
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "Normalizer-Send-Que",
+                channel.QueueDeclare(queue: "Aggregator",
                                      durable: true,
                                      exclusive: false,
                                      autoDelete: false,
@@ -62,49 +60,21 @@ namespace Aggregator
                 {
                     var body = ea.Body;
                     var header = ea.BasicProperties.Headers;
-                    DateTime past = DateTime.Now;
-                    DateTime future = past.AddSeconds(10);
-                    LoanRequest request = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
-                    request.orderNumber = Encoding.UTF8.GetString((byte[])header["Order"]);
-                    //then handle that message by consuming it and begin looking for new ones
-                    while (past < future)
-                    {
-                        if (!listOfLoans.Contains(request))
-                        {
-                            //add request for later use
-                            listOfLoans.Add(request);
-                            //consume message to make room for new messages
-                            channel.BasicConsume(queue: "Normalizer-Send-Que", autoAck: false, consumer: consumer);
-                        }
-                        else
-                        {
 
-                        }
-                        past = DateTime.Now;
-                    }
-                    try
-                    {
-                        LoanRequest bestLoan;
-                        foreach (LoanRequest item in listOfLoans)
-                        {
-                            if (item)
-                            {
+                    int ResponseAmount = int.Parse(Encoding.UTF8.GetString((byte[])ea.BasicProperties.Headers["Requests"]));
+                    string ID = ea.BasicProperties.CorrelationId;
 
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
+                    
+                    var message = body;
 
-                        throw;
-                    }
-
+                    sendEnriched(message, "AllResponses");
+                    
                     ///// send another message to another channel 
                     Console.WriteLine(" [x] Done");
 
                     //channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 };
-                channel.BasicConsume(queue: "Normalizer-Send-Que",
+                channel.BasicConsume(queue: "Aggregator",
                                      autoAck: false,
                                      consumer: consumer);
 

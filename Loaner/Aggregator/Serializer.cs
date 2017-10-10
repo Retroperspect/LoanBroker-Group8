@@ -15,7 +15,7 @@ namespace Aggregator
     {
         public static string SerializeObjectToXml(object t)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(LoanRequest));
+            XmlSerializer xml = new XmlSerializer(typeof(UniversalResponse));
 
             using (StringWriter textwriter = new StringWriter())
             {
@@ -24,12 +24,12 @@ namespace Aggregator
             }
         }
 
-        public static LoanRequest DeserializeObjectFromXml(string xml)
+        public static UniversalResponse DeserializeObjectFromXml(string xml)
         {
-            XmlSerializer dexml = new XmlSerializer(typeof(LoanRequest));
+            XmlSerializer dexml = new XmlSerializer(typeof(UniversalResponse));
             using (TextReader reader = new StringReader(xml))
             {
-                return (LoanRequest)dexml.Deserialize(reader);
+                return (UniversalResponse)dexml.Deserialize(reader);
             }
 
         }

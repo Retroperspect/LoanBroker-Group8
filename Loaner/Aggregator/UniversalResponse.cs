@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 namespace Aggregator
 {
     [Serializable]
-    public class LoanRequest
+    public class UniversalResponse
     {
         public string ssn { get; set; }
-        public string interestRate { get; set; }
-        public string orderNumber { get; set; }
+        public decimal interestrate { get; set; }
     }
 }

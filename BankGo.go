@@ -49,7 +49,7 @@ func SerializeToXML(response LoanResponse) []byte {
 }
 
 
-func SendResponse(Req Request, header amqp.Table){
+func SendResponse(Req Request, header amqp.Table, corID string){
 	log.Println("Succesfully received message nad transformed message to:",Req.Ssn,Req.Creditscore,Req.Loanamount,Req.Loanduration)
 	var response LoanResponse
 	response.Ssn = Req.Ssn
@@ -94,6 +94,8 @@ func SendResponse(Req Request, header amqp.Table){
 			ContentType:  "text/plain",
 			Body:         body,
 			Headers:		header,
+			CorrelationId:	corID,
+
 
 		})
 	failOnError(err, "Failed to publish a message")
@@ -163,12 +165,13 @@ func main() {
 			//// What to do when consuming message.
 			XMLMSG := d.Body;
 			Header := d.Headers
+			CorID := d.CorrelationId
 
 
 			var req Request
 			err := xml.Unmarshal([]byte(XMLMSG), &req)
 			failOnError(err, "Failed to Unmarshal XML-Message")
-			SendResponse(req, Header)
+			SendResponse(req, Header, CorID)
 			log.Printf("Done")
 			d.Ack(false)
 		}

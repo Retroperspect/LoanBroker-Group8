@@ -10,8 +10,7 @@ namespace Aggregator
     public class LoanRequest
     {
         public string ssn { get; set; }
-        public string LoanDuration { get; set; }
-        public double LoanAmmount { get; set; }
-        public int CreditScore { get; set; }
+        public string interestRate { get; set; }
+        public string orderNumber { get; set; }
     }
 }

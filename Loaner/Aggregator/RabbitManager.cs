@@ -11,6 +11,9 @@ namespace Aggregator
 {
     class RabbitManager
     {
+        //list of currently handled loans
+        public List<LoanRequest> listOfLoans { get; set; }
+
         //Remake into sending a enriched body to the aggregator
         public void sendEnriched(byte[] body, string messagetoreturn)
         {
@@ -53,31 +56,42 @@ namespace Aggregator
                 Console.WriteLine(" [*] Waiting for messages.");
 
                 var consumer = new EventingBasicConsumer(channel);
+
+                //first recieve the first message
                 consumer.Received += (model, ea) =>
                 {
                     var body = ea.Body;
+                    var header = ea.BasicProperties.Headers;
                     DateTime past = DateTime.Now;
                     DateTime future = past.AddSeconds(10);
-
+                    LoanRequest request = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
+                    request.orderNumber = Encoding.UTF8.GetString((byte[])header["Order"]);
+                    //then handle that message by consuming it and begin looking for new ones
                     while (past < future)
                     {
-                        //welp fix that spam
-                        sendEnriched(body, "LoanOnStandby");
+                        if (!listOfLoans.Contains(request))
+                        {
+                            //add request for later use
+                            listOfLoans.Add(request);
+                            //consume message to make room for new messages
+                            channel.BasicConsume(queue: "Normalizer-Send-Que", autoAck: false, consumer: consumer);
+                        }
+                        else
+                        {
 
-                        channel.BasicConsume(queue: "Normalizer-Send-Que", autoAck: false, consumer: consumer);
+                        }
+                        past = DateTime.Now;
                     }
                     try
                     {
-                        channel.QueueDeclare(queue: "Aggregator-Wait-Que",
-                                     durable: true,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-                        consumer = new EventingBasicConsumer(channel);
-                        consumer.Received += (eodel, da) =>
+                        LoanRequest bestLoan;
+                        foreach (LoanRequest item in listOfLoans)
                         {
+                            if (item)
+                            {
 
-                        };
+                            }
+                        }
                     }
                     catch (Exception)
                     {
@@ -85,14 +99,7 @@ namespace Aggregator
                         throw;
                     }
 
-                    LoanRequest XmlRequest = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
-                    //implement the correct format and implement logic for gathering and finding the best loan option
-                    var messageXmlRequest = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = XmlRequest.ssn, CreditScore = XmlRequest.CreditScore, LoanAmmount = XmlRequest.LoanAmmount, LoanDuration = XmlRequest.LoanDuration });
-                    Console.WriteLine("received {0}", messageXmlRequest);
-                    //
-                    sendEnriched(Encoding.UTF8.GetBytes(messageXmlRequest), "LoanReturn");
-
-                    ///// send anotehr message to another channel 
+                    ///// send another message to another channel 
                     Console.WriteLine(" [x] Done");
 
                     //channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);

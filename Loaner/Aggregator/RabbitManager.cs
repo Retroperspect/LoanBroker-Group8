@@ -127,8 +127,9 @@ namespace Aggregator
                             //// Starts new thread that will count down from 30, when time is up: Send all responses regardsless of missing responses (The banks were to slow in delivering
                             
                                Console.WriteLine("Saved ID and starting counter to send and move aggregation to dead.");
-                               string id = ID; //// Saves ID, since ID will change when it consumes new message.
+                               
                             new Thread(delegate () {
+                                string id = ID; //// Saves ID, since ID will change when it consumes new message.
                                 var agindex = Aggregations.FindIndex(R => R.Aggregation_ID == id);  //// Finds Index where the ID is the same as the saven correlation ID. BEFORE starting delay
                                 var t1 = Task.Run(async delegate
                                 {

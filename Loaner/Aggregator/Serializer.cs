@@ -15,7 +15,7 @@ namespace Aggregator
     {
         public static string SerializeObjectToXml(object t)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(UniversalResponse));
+            XmlSerializer xml = new XmlSerializer(typeof(Responses));
 
             using (StringWriter textwriter = new StringWriter())
             {

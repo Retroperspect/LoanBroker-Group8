@@ -11,10 +11,9 @@ namespace Aggregator
         static void Main(string[] args)
         {
             RabbitManager rm = new RabbitManager();
-            while (true)
-            {
-                rm.receiveMessage();
-            }
+            
+            rm.receiveMessage();
+            
         }
     }
 }

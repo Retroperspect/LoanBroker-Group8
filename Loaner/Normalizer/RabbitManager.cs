@@ -35,10 +35,14 @@ namespace Normalizer
                 var properties = channel.CreateBasicProperties();
                 properties.Headers = new Dictionary<string, object>();
                 properties.Persistent = true;
+                if (basic.CorrelationId == null)
+                {
+                    properties.CorrelationId = "FAULTY COR_ID!";
+                }
                 properties.CorrelationId = basic.CorrelationId;
                 properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
 
-
+                
 
                 channel.BasicPublish(exchange: "", routingKey: messagetoreturn, basicProperties: properties, body: body);
                 Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));

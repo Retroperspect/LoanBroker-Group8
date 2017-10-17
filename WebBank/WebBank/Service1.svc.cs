@@ -32,9 +32,16 @@ namespace WebBank
             return composite;
         }
 
-        public void HandleRequest()
+        public void HandleRequest() //// This one should take Argument. public void HandleRequest(LoanRequest)
         {
-            receiveMessage();
+            receiveMessage(); /// the bank should not listen to a RabbitMQ channel :), it should listen foooor?: a soap http request. which all work automaticly when you add the reference in your console app and you call it's method.
+
+            // So maybe -ReceiveMessage
+            // Use LoanRequest to process information and get a UniversalResponse back, then send that with SendEnriched without ever needing to listen to a rabbitMQ server.
+            // + SendEnriched(UniversalResponse, Replyque) = if smart, you can even parse in the IBasicProperties from the SOAP call. :D
+
+            // You can also, avoid using RabbitMQ totaly. Just send back the universalResponse to the ConsoleApp which then can send the message onwards to the Normalizer or aggregator.
+
         }
 
         public void sendEnriched(byte[] body, IBasicProperties basic, string replyque)

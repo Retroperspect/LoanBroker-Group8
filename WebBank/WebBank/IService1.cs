@@ -21,7 +21,13 @@ namespace WebBank
 
         // TODO: Add your service operations here
         [OperationContract]
-        void HandleRequest();
+        void HandleRequest();  //// Does the bank not need any information to process a request???????? :D how do they do that.
+        // Maybe: void HandleRequest(UniversalResponse Response) = Put in an argument which the bank uses to process the request.
+
+        // You could maybe even pass on the IBasicProperties from the RabbitMQ message that the console app gets so it would maybe be:
+        // HandleRequest(LoanRequest request, IBasicProperties Basic)
+
+
     }
 
 

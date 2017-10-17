@@ -28,7 +28,7 @@ namespace GetBanksWSDL
             {
                 results.Add(new Banks() { format = "XML", Input = "GoBankRequest", Output = "GoBankResponse" });
             }
-            if (CreditScore > 600)
+            if (CreditScore > 200)
             {
                 results.Add(new Banks() { format = "XML", Input = "LoanRequestB2", Output = "Group8-LoanBroker-Request" });
             }

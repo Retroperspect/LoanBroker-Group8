@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="apirequest.cs" />
     <Compile Include="Bank.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="LoanRequest.cs" />

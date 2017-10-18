@@ -34,7 +34,7 @@ namespace WebBank
         {
             decimal interestrate = 0;
             //figure out interest rate
-            if (request.CreditScore <= 400)
+            if (request.CreditScore < 400)
             {
                 interestrate = 6.5m;
             }

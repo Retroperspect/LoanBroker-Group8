@@ -1,14 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebBank", "WebBank\WebBank.csproj", "{E96E29D2-A0DC-409E-889D-940049ABE32C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebBankConsole", "WebBankConsole\WebBankConsole.csproj", "{3F29FF1B-54A7-4137-A5AC-B1BF07F511E6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E96E29D2-A0DC-409E-889D-940049ABE32C} = {E96E29D2-A0DC-409E-889D-940049ABE32C}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,12 +15,11 @@ Global
 		{E96E29D2-A0DC-409E-889D-940049ABE32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E96E29D2-A0DC-409E-889D-940049ABE32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E96E29D2-A0DC-409E-889D-940049ABE32C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F29FF1B-54A7-4137-A5AC-B1BF07F511E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F29FF1B-54A7-4137-A5AC-B1BF07F511E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F29FF1B-54A7-4137-A5AC-B1BF07F511E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F29FF1B-54A7-4137-A5AC-B1BF07F511E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {80258A06-C694-403F-A3A9-10B952DC1AEC}
 	EndGlobalSection
 EndGlobal

@@ -26,10 +26,13 @@ namespace RecipientList_Router
                     channel.QueueDeclare(queue: banktosend.format, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
 
-
+                    if (banktosend.Bname != "None")
+                    {
                     basic.Headers["in"] = banktosend.Input;
                     basic.Headers["reply"] = banktosend.Output;
                     basic.Headers["bname"] = banktosend.Bname;
+                    }
+                    
 
                 //Publish Message
                 channel.BasicPublish(exchange: "", routingKey: banktosend.format, basicProperties: basic, body: body);
@@ -66,6 +69,14 @@ namespace RecipientList_Router
 
                         LoanRequestWithBanks FullRequest =  (LoanRequestWithBanks)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(LoanRequestWithBanks));
 
+                        if (FullRequest.ViableBanks.Count == 0)
+                        {
+                            var message = Encoding.UTF8.GetBytes("CreditScore is to low, no banks will take the loan request. Your CreditScore is: "+FullRequest.CreditScore);
+                            var properties = channel.CreateBasicProperties();
+                            properties.Persistent = true;
+                            properties.CorrelationId = ea.BasicProperties.CorrelationId;
+                            sendEnriched(message, new Bank() { format = "BestResponse", Bname = "None", Input = "None", Output = "None" }, properties);
+                        }
                         foreach (var bank in FullRequest.ViableBanks)
                         {
 

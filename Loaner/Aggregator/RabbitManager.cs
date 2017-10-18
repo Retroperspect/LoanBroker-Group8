@@ -138,7 +138,7 @@ namespace Aggregator
                                 var agindex = Aggregations.FindIndex(R => R.Aggregation_ID == id);  //// Finds Index where the ID is the same as the saven correlation ID. BEFORE starting delay
                                 var t1 = Task.Run(async delegate
                                 {
-                                    await Task.Delay(30 * 1000);
+                                    await Task.Delay(10 * 1000);
 
                                     
                                     sendEnriched(Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(Aggregations[agindex], Aggregations[agindex].GetType())), "AllResponses", ea.BasicProperties.CorrelationId); //// send the responses from the ID that was saven.

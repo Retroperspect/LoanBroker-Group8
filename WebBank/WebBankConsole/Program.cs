@@ -15,12 +15,10 @@ namespace WebBankConsole
         public static WebBankService.Service1Client client;
         static void Main(string[] args)
         {
-            client = new WebBankService.Service1Client();
+
             receiveMessage();
-            /// This is the translator, no?. This Console Application should listen to a RabbitMQ channel somewhere more specificly "LoanRequestB2".
-            /// As from the GetBanks Service: format = "XML", Input = "LoanRequestB2", Output = "Group8-LoanBroker-Request" }) you can change it if you want.
-            /// It should translate the message to the banks prefered format and then send to the bank by one of the 4 ways of system integration.
-            /// in this case just contact a SOAP service to either get the UniversalResponse within the code or have the webservice send to a rabbitMQ channel.
+            
+
         }
 
         public static void sendEnriched(byte[] body, IBasicProperties basic, string replyque)
@@ -33,14 +31,10 @@ namespace WebBankConsole
                 channel.QueueDeclare(queue: replyque, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
 
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
-                properties.CorrelationId = basic.CorrelationId;
-                properties.ContentType = "Bank response with interest rate.";
 
 
                 //Publish Message
-                channel.BasicPublish(exchange: "", routingKey: replyque, basicProperties: properties, body: body);
+                channel.BasicPublish(exchange: "", routingKey: replyque, basicProperties: basic, body: body);
 
 
             }

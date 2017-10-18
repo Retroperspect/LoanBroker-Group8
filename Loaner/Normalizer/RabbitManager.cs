@@ -94,6 +94,13 @@ namespace Normalizer
                         messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(UR, typeof(UniversalResponse)));
                     }
                     catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with GOBANK error: " + e.ToString()); }
+                    try 
+                    {
+                        UniversalResponse universal = (UniversalResponse)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(UniversalResponse));
+
+                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(universal, typeof(UniversalResponse)));
+                    }
+                    catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with C#Bank error: " + e.ToString()); }
 
 
                     ///

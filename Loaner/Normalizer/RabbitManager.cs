@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Loaner_Library;
 
 namespace Normalizer
 {
@@ -32,19 +33,12 @@ namespace Normalizer
                 channel.QueueDeclare(queue: messagetoreturn, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
 
-                var properties = channel.CreateBasicProperties();
-                properties.Headers = new Dictionary<string, object>();
-                properties.Persistent = true;
-                if (basic.CorrelationId == null)
-                {
-                    properties.CorrelationId = "FAULTY COR_ID!";
-                }
-                properties.CorrelationId = basic.CorrelationId;
-                properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
+
+
 
                 
 
-                channel.BasicPublish(exchange: "", routingKey: messagetoreturn, basicProperties: properties, body: body);
+                channel.BasicPublish(exchange: "", routingKey: messagetoreturn, basicProperties: basic, body: body);
                 Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 
@@ -80,24 +74,24 @@ namespace Normalizer
 
                     try
                     {
-                        XMLCPHBankClass cph = Serializer.DeserializeObjectFromXmlCPH(Encoding.UTF8.GetString(body));
+                        XMLCPHBankClass cph = (XMLCPHBankClass)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(XMLCPHBankClass));
                         UniversalResponse UR = new UniversalResponse() { ssn = cph.ssn, interestrate = cph.interestRate };
 
-                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(UR));
+                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(UR, typeof(UniversalResponse)));
                     }catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with XMLCPH error: " + e.ToString()); }
                     try
                     {
-                        JSONResponse json = Serializer.DeserializeObjectFromJSONCPH(Encoding.UTF8.GetString(body));
+                        JSONResponse json = (JSONResponse)Serializer.DeserializeObjectFromJsonType(Encoding.UTF8.GetString(body), typeof(JSONResponse));
                         UniversalResponse UR = new UniversalResponse() { ssn = json.ssn, interestrate = json.interestRate };
 
-                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(UR));
+                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(UR, typeof(UniversalResponse)));
                     } catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with JSONCPH error: " + e.ToString()); }
                     try
                     {
-                        GoBankResponse go = Serializer.DeserializeObjectFromXmlGo(Encoding.UTF8.GetString(body));
+                        GoBankResponse go = (GoBankResponse)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(GoBankResponse));
                         UniversalResponse UR = new UniversalResponse() { ssn = go.ssn, interestrate = go.interestRate };
 
-                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(UR));
+                        messages = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(UR, typeof(UniversalResponse)));
                     }
                     catch (Exception e) { Console.WriteLine("Unsuccesfull Normalization with GOBANK error: " + e.ToString()); }
 

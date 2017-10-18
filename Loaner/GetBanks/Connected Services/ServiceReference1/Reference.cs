@@ -84,6 +84,9 @@ namespace GetBanks.ServiceReference1 {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string BnameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string InputField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -99,6 +102,19 @@ namespace GetBanks.ServiceReference1 {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Bname {
+            get {
+                return this.BnameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.BnameField, value) != true)) {
+                    this.BnameField = value;
+                    this.RaisePropertyChanged("Bname");
+                }
             }
         }
         

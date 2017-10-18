@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Loaner_Library;
 
 namespace XMLTranslator
 {
@@ -27,20 +28,15 @@ namespace XMLTranslator
                     var Que = channel.QueueDeclare(queue: replyque, durable: true, exclusive: false, autoDelete: false, arguments: null);
                     
 
-                    /////
-                    var properties = channel.CreateBasicProperties();
-                    properties.Headers = new Dictionary<string, object>();
-                    properties.Persistent = true;
-                    properties.ReplyTo = Que.QueueName;
-                    properties.CorrelationId = basic.CorrelationId;
-                    properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
+                    basic.ReplyTo = Que.QueueName;
+
 
 
 
                 IMapMessageBuilder b = new MapMessageBuilder(channel);
                     
                     //Publish Message
-                    channel.BasicPublish(exchange: quename, routingKey: "", basicProperties: properties, body: body);
+                    channel.BasicPublish(exchange: quename, routingKey: "", basicProperties: basic, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
                     
 
@@ -70,7 +66,7 @@ namespace XMLTranslator
                         var header = ea.BasicProperties.Headers;
 
                         //// The untranslated message!!!
-                        var mes = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
+                        var mes = (LoanRequest)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(LoanRequest));
 
                         Console.WriteLine( mes.CreditScore + "--------------------------------");
                         //////TRANSLATION COMENCE!!!
@@ -84,7 +80,7 @@ namespace XMLTranslator
                         Request.LoanAmount = (float)mes.LoanAmmount;
                         Request.LoanDuration = TranslatedDuration;
                         ///// Message translated to correct format.
-                        var message = Encoding.UTF8.GetBytes( Serializer.SerializeObjectToXml(Request) );
+                        var message = Encoding.UTF8.GetBytes(Serializer.utf8SerializeObjectToXmlType(Request, Request.GetType()));
                         Console.WriteLine(Request.creditScore + "--REQ-------------------------");
 
                         /// Now to put destination and reply channel into header for easy sending.

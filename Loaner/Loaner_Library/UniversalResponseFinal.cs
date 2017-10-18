@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Aggregator
+namespace Loaner_Library
 {
     [Serializable]
-    public class UniversalResponse
+    public class UniversalResponseFinal
     {
         [XmlElement("ssn")]
         public string ssn { get; set; }
         [XmlElement("interestrate")]
         public decimal interestrate { get; set; }
+        [XmlElement("bank")]
+        public string bank { get; set; }
     }
 }

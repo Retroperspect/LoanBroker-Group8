@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Aggregator
+namespace Loaner_Library
 {
     [XmlRoot("Responses")]
     public class Responses
@@ -13,7 +13,7 @@ namespace Aggregator
         //[XmlIgnore]
         public string Aggregation_ID { get; set; }
         [XmlElement("Response")]
-        public List<UniversalResponse> MasterList = new List<UniversalResponse>();
+        public List<UniversalResponseFinal> MasterList = new List<UniversalResponseFinal>();
         //[XmlIgnore]
         public int ExpectedResponses { get; set; }
 

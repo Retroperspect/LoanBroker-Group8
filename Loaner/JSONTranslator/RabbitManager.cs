@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Loaner_Library;
 
 namespace JSONTranslator
 {
@@ -32,17 +33,12 @@ namespace JSONTranslator
 
                     /////
                     
-                    var properties = channel.CreateBasicProperties();
-                    properties.Headers = new Dictionary<string, object>();
-                    properties.Persistent = true;
-                    properties.ReplyTo = Que.QueueName;
-                    properties.CorrelationId = basic.CorrelationId;
-                    properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
+                    basic.ReplyTo = Que.QueueName;
 
                 IMapMessageBuilder b = new MapMessageBuilder(channel);
 
                     //Publish Message
-                    channel.BasicPublish(exchange: quename, routingKey: "", basicProperties: properties, body: body);
+                    channel.BasicPublish(exchange: quename, routingKey: "", basicProperties: basic, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 
@@ -76,7 +72,8 @@ namespace JSONTranslator
                         // 
 
 
-                        var mes = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
+
+                        var mes = (LoanRequest)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(LoanRequest));
 
                         
                         //////TRANSLATION COMENCE!!!
@@ -87,7 +84,7 @@ namespace JSONTranslator
                         TranslatedRequest Request = new TranslatedRequest() { ssn = mes.ssn.Replace("-", ""), creditScore = mes.CreditScore, loanAmount = (decimal)mes.LoanAmmount, loanDuration = TranslatedDuration };
 
                         
-                        var message = Encoding.UTF8.GetBytes( Serializer.JSONSerializeObject(Request) );
+                        var message = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToJsonType(Request));
 
                         string input;
                         string output;

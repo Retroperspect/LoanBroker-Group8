@@ -32,7 +32,6 @@ namespace Loaner
 
                 var properties = channel.CreateBasicProperties();
                 properties.Persistent = true;
-                properties.ContentType = "Class of LoanRequest.";
                 properties.CorrelationId = Guid.NewGuid().ToString();
 
                 //Publish Message

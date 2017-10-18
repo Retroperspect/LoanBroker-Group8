@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Loaner_Library;
 
 namespace RecipientList_Router
 {
@@ -25,15 +26,13 @@ namespace RecipientList_Router
                     channel.QueueDeclare(queue: banktosend.format, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
 
-                    var properties = channel.CreateBasicProperties();
-                    properties.Headers = new Dictionary<string, object>();
-                    properties.CorrelationId = basic.CorrelationId;
-                    properties.ContentType = "Class of LoanRequest.";
-                    properties.Headers["in"] = banktosend.Input;
-                    properties.Headers["reply"] = banktosend.Output;
-                    properties.Headers["Requests"] = Encoding.UTF8.GetString((byte[])basic.Headers["Requests"]);
+
+                    basic.Headers["in"] = banktosend.Input;
+                    basic.Headers["reply"] = banktosend.Output;
+                    basic.Headers["bname"] = banktosend.Bname;
+
                 //Publish Message
-                channel.BasicPublish(exchange: "", routingKey: banktosend.format, basicProperties: properties, body: body);
+                channel.BasicPublish(exchange: "", routingKey: banktosend.format, basicProperties: basic, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 
@@ -60,15 +59,17 @@ namespace RecipientList_Router
                     consumer.Received += (model, ea) =>
                     {
                         var body = ea.Body;
-                        
+                        var header = ea.BasicProperties.Headers;
+
+                        //// If header requets is 0 = send no response to final result.
 
 
-                        LoanRequestWithBanks FullRequest = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
+                        LoanRequestWithBanks FullRequest =  (LoanRequestWithBanks)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(LoanRequestWithBanks));
 
                         foreach (var bank in FullRequest.ViableBanks)
                         {
 
-                            var message = Serializer.SerializeObjectToXml(new LoanRequest() { ssn = FullRequest.ssn, CreditScore = FullRequest.CreditScore, LoanAmmount = FullRequest.LoanAmmount, LoanDuration = FullRequest.LoanDuration});
+                            var message = Serializer.SerializeObjectToXmlType(new LoanRequest() { ssn = FullRequest.ssn, CreditScore = FullRequest.CreditScore, LoanAmmount = FullRequest.LoanAmmount, LoanDuration = FullRequest.LoanDuration }, typeof(LoanRequest));
                             sendEnriched(Encoding.UTF8.GetBytes(message), bank, ea.BasicProperties);
 
                         }

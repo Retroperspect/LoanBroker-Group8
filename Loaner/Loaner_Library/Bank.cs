@@ -10,5 +10,7 @@ namespace Loaner_Library
         public string Input { get; set; }
         [XmlElement("Output")]
         public string Output { get; set; }
+        [XmlElement("BankName")]
+        public string Bname { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Loaner_Library;
 
 namespace GetCreditScore
 {
@@ -24,13 +25,10 @@ namespace GetCreditScore
                     channel.QueueDeclare(queue: "RequestWithCredit", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
                     
-                    var properties = channel.CreateBasicProperties();
-                    properties.Persistent = true;
-                    properties.CorrelationId = basic.CorrelationId;
-                    properties.ContentType = "Class of LoanRequest.";
+
 
                 //Publish Message
-                channel.BasicPublish(exchange: "", routingKey: "RequestWithCredit", basicProperties: properties, body: body);
+                channel.BasicPublish(exchange: "", routingKey: "RequestWithCredit", basicProperties: basic, body: body);
                     Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
 
 
@@ -57,11 +55,11 @@ namespace GetCreditScore
                     consumer.Received += (model, ea) =>
                     {
                         var body = ea.Body;
-                        LoanRequest NoCredits = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
+                        LoanRequest NoCredits = (LoanRequest)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(LoanRequest));
                         CreditScoreService.CreditScoreServiceClient client = new CreditScoreService.CreditScoreServiceClient();
                         NoCredits.CreditScore = client.creditScore(NoCredits.ssn);
                         Console.WriteLine(" [x] Received {0}");
-                        var message = Serializer.SerializeObjectToXml(NoCredits);
+                        var message = Serializer.SerializeObjectToXmlType(NoCredits, NoCredits.GetType());
                         
                         sendEnriched(Encoding.UTF8.GetBytes(message), ea.BasicProperties);
 

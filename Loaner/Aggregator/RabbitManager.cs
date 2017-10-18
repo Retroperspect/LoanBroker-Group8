@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Loaner_Library;
 
 namespace Aggregator
 {
@@ -17,7 +18,7 @@ namespace Aggregator
         List<Responses> Aggregations = new List<Responses>();
 
         //Remake into sending a enriched body to the aggregator
-        public void sendEnriched(byte[] body, string messagetoreturn)
+        public void sendEnriched(byte[] body, string messagetoreturn, string corID)
         {
             var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
             using (var connection = factory.CreateConnection())
@@ -26,9 +27,10 @@ namespace Aggregator
                 //Declares a que
                 channel.QueueDeclare(queue: messagetoreturn, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-
                 var properties = channel.CreateBasicProperties();
                 properties.Persistent = true;
+                properties.CorrelationId = corID;
+
 
                 channel.BasicPublish(exchange: "", routingKey: messagetoreturn, basicProperties: properties, body: body);
                 Console.WriteLine(" [x] Sent {0}", Encoding.UTF8.GetString(body));
@@ -67,14 +69,17 @@ namespace Aggregator
                     int ResponseAmount = int.Parse(Encoding.UTF8.GetString((byte[])ea.BasicProperties.Headers["Requests"]));
                     string ID = ea.BasicProperties.CorrelationId;
 
+                    var tempresponse = (UniversalResponse)Serializer.DeserializeObjectFromXmlType(Encoding.UTF8.GetString(body), typeof(UniversalResponse));
+                    UniversalResponseFinal responsefinal = new UniversalResponseFinal() { ssn = tempresponse.ssn, interestrate = tempresponse.interestrate, bank = Encoding.UTF8.GetString((byte[])ea.BasicProperties.Headers["bname"]) };
+
+
                     //////// if the response is late it will just send the response directly to late-responses channel.
                     if (DeadAggregations.Contains(ID))
                     {
                         Console.WriteLine("ID was found in deadAggre");
                         var message = body;
-                        sendEnriched(message, "Late-Responses");
+                        sendEnriched(message, "Late-Responses", ea.BasicProperties.CorrelationId);
                     }
-
                     ///// If the response is a response of a request which has allready seen another response : it will then =
                     else if (ActiveAggregations.Contains(ID))
                     {
@@ -82,12 +87,12 @@ namespace Aggregator
                         //// Find the Index of the aggregationlist
                         var index = Aggregations.FindIndex(R => R.Aggregation_ID == ID);
                         ///// Add the response to the list of responses in the aggregation.
-                        Aggregations[index].MasterList.Add(Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body)));
+                        Aggregations[index].MasterList.Add(responsefinal);
 
                         //// It will also check if all responses has been received, if so. Send message and 
                         if (Aggregations[index].CheckIfFull())
                         {
-                            sendEnriched(Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(Aggregations[index])), "AllResponses");
+                            sendEnriched(Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(Aggregations[index], typeof(Responses))), "AllResponses", ea.BasicProperties.CorrelationId);
                             Console.WriteLine("Sending because FULL!");
                             //// Removes aggregation from aggregator and Active aggregationslist and adds to DeadAggregations list (((( Should not be neccesary, since all messages has been received )))
                             Aggregations.RemoveAt(index);
@@ -113,8 +118,8 @@ namespace Aggregator
 
                         if (ResponseAmount == 1) ///// If the request only expects 1 response, since only 1 bank was viable to the request - it should just send the response immedietly ... yes :)
                         { ///// Also means that it will not be added to the aggregation but just passed straight to responses.
-                            Responses QuickResp = new Responses() { Aggregation_ID = ID, ExpectedResponses = ResponseAmount, MasterList = new List<UniversalResponse>() { Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body)) } };
-                            sendEnriched(Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(QuickResp)), "AllResponses");
+                            Responses QuickResp = new Responses() { Aggregation_ID = ID, ExpectedResponses = ResponseAmount, MasterList = new List<UniversalResponseFinal>() { responsefinal } };
+                            sendEnriched(Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(QuickResp, QuickResp.GetType())), "AllResponses", ea.BasicProperties.CorrelationId);
                             Console.WriteLine("Only 1 response expected! sending!");
                         }
                         else //// Otherwise just go ahead with setting up an aggregation of responses.
@@ -122,7 +127,7 @@ namespace Aggregator
                             //// Adds correlation ID to the a list to controll easily.
                             ActiveAggregations.Add(ID);
                             //// Adds Response to a new (Responses) class, and adds ID and expectedResponses to controll when it can be sent.
-                            Aggregations.Add(new Responses() { Aggregation_ID = ID, ExpectedResponses = ResponseAmount, MasterList = new List<UniversalResponse>() { Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body)) } });
+                            Aggregations.Add(new Responses() { Aggregation_ID = ID, ExpectedResponses = ResponseAmount, MasterList = new List<UniversalResponseFinal>() { responsefinal } });
 
                             //// Starts new thread that will count down from 30, when time is up: Send all responses regardsless of missing responses (The banks were to slow in delivering
                             
@@ -136,7 +141,7 @@ namespace Aggregator
                                     await Task.Delay(30 * 1000);
 
                                     
-                                    sendEnriched(Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXml(Aggregations[agindex])), "AllResponses"); //// send the responses from the ID that was saven.
+                                    sendEnriched(Encoding.UTF8.GetBytes(Serializer.SerializeObjectToXmlType(Aggregations[agindex], Aggregations[agindex].GetType())), "AllResponses", ea.BasicProperties.CorrelationId); //// send the responses from the ID that was saven.
                                     Console.WriteLine("sending Because 30 seconds have passed!");
                                     //// Removes aggregation and ID from the active stuff and put ID into deadAggregations so that the system can ignore further responses if the banks resposne was late.
                                     Aggregations.RemoveAt(agindex);

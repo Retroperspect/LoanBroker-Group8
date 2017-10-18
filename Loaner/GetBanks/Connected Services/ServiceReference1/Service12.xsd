@@ -15,6 +15,7 @@
   <xs:element name="ArrayOfBanks" nillable="true" type="tns:ArrayOfBanks" />
   <xs:complexType name="Banks">
     <xs:sequence>
+      <xs:element minOccurs="0" name="Bname" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Input" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Output" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="format" nillable="true" type="xs:string" />

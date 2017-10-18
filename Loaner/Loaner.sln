@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loaner", "Loaner\Loaner.csproj", "{7038C065-31C1-4915-B631-5F47EE39FD68}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator", "Aggregator\Aggregator.csproj", "{838BFDD1-45F2-4C37-AFE9-CB42EC53C0E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loaner_Library", "Loaner_Library\Loaner_Library.csproj", "{2F69DE94-3BA7-4D30-B8BF-B68A9172F0DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Determiner", "Determiner\Determiner.csproj", "{F5B98F46-40AD-4C84-89B9-1CBA928099CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{2F69DE94-3BA7-4D30-B8BF-B68A9172F0DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F69DE94-3BA7-4D30-B8BF-B68A9172F0DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F69DE94-3BA7-4D30-B8BF-B68A9172F0DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5B98F46-40AD-4C84-89B9-1CBA928099CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5B98F46-40AD-4C84-89B9-1CBA928099CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5B98F46-40AD-4C84-89B9-1CBA928099CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5B98F46-40AD-4C84-89B9-1CBA928099CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

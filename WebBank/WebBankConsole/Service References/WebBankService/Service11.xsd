@@ -31,12 +31,16 @@
   </xs:element>
   <xs:element name="HandleRequest">
     <xs:complexType>
-      <xs:sequence />
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/WebBank" minOccurs="0" name="request" nillable="true" type="q3:LoanRequest" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="HandleRequestResponse">
     <xs:complexType>
-      <xs:sequence />
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/WebBank" minOccurs="0" name="HandleRequestResult" nillable="true" type="q4:UniversalResponse" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>

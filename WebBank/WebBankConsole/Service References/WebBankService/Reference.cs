@@ -74,6 +74,154 @@ namespace WebBankConsole.WebBankService {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LoanRequest", Namespace="http://schemas.datacontract.org/2004/07/WebBank")]
+    [System.SerializableAttribute()]
+    public partial class LoanRequest : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        private int CreditScorek__BackingFieldField;
+        
+        private double LoanAmmountk__BackingFieldField;
+        
+        private string LoanDurationk__BackingFieldField;
+        
+        private string ssnk__BackingFieldField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="<CreditScore>k__BackingField", IsRequired=true)]
+        public int CreditScorek__BackingField {
+            get {
+                return this.CreditScorek__BackingFieldField;
+            }
+            set {
+                if ((this.CreditScorek__BackingFieldField.Equals(value) != true)) {
+                    this.CreditScorek__BackingFieldField = value;
+                    this.RaisePropertyChanged("CreditScorek__BackingField");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="<LoanAmmount>k__BackingField", IsRequired=true)]
+        public double LoanAmmountk__BackingField {
+            get {
+                return this.LoanAmmountk__BackingFieldField;
+            }
+            set {
+                if ((this.LoanAmmountk__BackingFieldField.Equals(value) != true)) {
+                    this.LoanAmmountk__BackingFieldField = value;
+                    this.RaisePropertyChanged("LoanAmmountk__BackingField");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="<LoanDuration>k__BackingField", IsRequired=true)]
+        public string LoanDurationk__BackingField {
+            get {
+                return this.LoanDurationk__BackingFieldField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.LoanDurationk__BackingFieldField, value) != true)) {
+                    this.LoanDurationk__BackingFieldField = value;
+                    this.RaisePropertyChanged("LoanDurationk__BackingField");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="<ssn>k__BackingField", IsRequired=true)]
+        public string ssnk__BackingField {
+            get {
+                return this.ssnk__BackingFieldField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ssnk__BackingFieldField, value) != true)) {
+                    this.ssnk__BackingFieldField = value;
+                    this.RaisePropertyChanged("ssnk__BackingField");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UniversalResponse", Namespace="http://schemas.datacontract.org/2004/07/WebBank")]
+    [System.SerializableAttribute()]
+    public partial class UniversalResponse : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        private decimal interestratek__BackingFieldField;
+        
+        private string ssnk__BackingFieldField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="<interestrate>k__BackingField", IsRequired=true)]
+        public decimal interestratek__BackingField {
+            get {
+                return this.interestratek__BackingFieldField;
+            }
+            set {
+                if ((this.interestratek__BackingFieldField.Equals(value) != true)) {
+                    this.interestratek__BackingFieldField = value;
+                    this.RaisePropertyChanged("interestratek__BackingField");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Name="<ssn>k__BackingField", IsRequired=true)]
+        public string ssnk__BackingField {
+            get {
+                return this.ssnk__BackingFieldField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ssnk__BackingFieldField, value) != true)) {
+                    this.ssnk__BackingFieldField = value;
+                    this.RaisePropertyChanged("ssnk__BackingField");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="WebBankService.IService1")]
     public interface IService1 {
@@ -91,10 +239,10 @@ namespace WebBankConsole.WebBankService {
         System.Threading.Tasks.Task<WebBankConsole.WebBankService.CompositeType> GetDataUsingDataContractAsync(WebBankConsole.WebBankService.CompositeType composite);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService1/HandleRequest", ReplyAction="http://tempuri.org/IService1/HandleRequestResponse")]
-        void HandleRequest();
+        WebBankConsole.WebBankService.UniversalResponse HandleRequest(WebBankConsole.WebBankService.LoanRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService1/HandleRequest", ReplyAction="http://tempuri.org/IService1/HandleRequestResponse")]
-        System.Threading.Tasks.Task HandleRequestAsync();
+        System.Threading.Tasks.Task<WebBankConsole.WebBankService.UniversalResponse> HandleRequestAsync(WebBankConsole.WebBankService.LoanRequest request);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -140,12 +288,12 @@ namespace WebBankConsole.WebBankService {
             return base.Channel.GetDataUsingDataContractAsync(composite);
         }
         
-        public void HandleRequest() {
-            base.Channel.HandleRequest();
+        public WebBankConsole.WebBankService.UniversalResponse HandleRequest(WebBankConsole.WebBankService.LoanRequest request) {
+            return base.Channel.HandleRequest(request);
         }
         
-        public System.Threading.Tasks.Task HandleRequestAsync() {
-            return base.Channel.HandleRequestAsync();
+        public System.Threading.Tasks.Task<WebBankConsole.WebBankService.UniversalResponse> HandleRequestAsync(WebBankConsole.WebBankService.LoanRequest request) {
+            return base.Channel.HandleRequestAsync(request);
         }
     }
 }

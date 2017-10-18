@@ -1,6 +1,4 @@
-﻿using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -32,80 +30,28 @@ namespace WebBank
             return composite;
         }
 
-        public void HandleRequest() //// This one should take Argument. public void HandleRequest(LoanRequest)
+        public UniversalResponse HandleRequest(LoanRequest request) //// This one should take Argument. public void HandleRequest(LoanRequest)
         {
-            receiveMessage(); /// the bank should not listen to a RabbitMQ channel :), it should listen foooor?: a soap http request. which all work automaticly when you add the reference in your console app and you call it's method.
-
-            // So maybe -ReceiveMessage
-            // Use LoanRequest to process information and get a UniversalResponse back, then send that with SendEnriched without ever needing to listen to a rabbitMQ server.
-            // + SendEnriched(UniversalResponse, Replyque) = if smart, you can even parse in the IBasicProperties from the SOAP call. :D
-
-            // You can also, avoid using RabbitMQ totaly. Just send back the universalResponse to the ConsoleApp which then can send the message onwards to the Normalizer or aggregator.
-
-        }
-
-        public void sendEnriched(byte[] body, IBasicProperties basic, string replyque)
-        {
-            var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            decimal interestrate = 0;
+            //figure out interest rate
+            if (request.CreditScore <= 400)
             {
-                //Declares a que
-                channel.QueueDeclare(queue: replyque, durable: true, exclusive: false, autoDelete: false, arguments: null);
-
-
-                var properties = channel.CreateBasicProperties();
-                properties.Headers = new Dictionary<string, object>();
-                properties.Persistent = true;
-                properties.CorrelationId = basic.CorrelationId;
-                properties.ContentType = "Bank response with interest rate.";
-
-
-                //Publish Message
-                channel.BasicPublish(exchange: "", routingKey: "RequestFromBank", basicProperties: properties, body: body);
-
-
+                interestrate = 6.5m;
+            }
+            else if (request.CreditScore > 400 && request.CreditScore <= 750)
+            {
+                interestrate = 3.5m;
+            }
+            else if (request.CreditScore > 750)
+            {
+                interestrate = 0.5m;
             }
 
+            //convert
+            return URConversion(request, interestrate);
         }
-        public void receiveMessage()
-        {
-            var factory = new ConnectionFactory() { HostName = "138.197.186.82", UserName = "admin", Password = "password" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "LoanRequestB2",
-                                     durable: true,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
 
-                channel.BasicQos(0, 1, false);
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
-                {
-                    var body = ea.Body;
-
-
-                    LoanRequest request = Serializer.DeserializeObjectFromXml(Encoding.UTF8.GetString(body));
-
-                    //implement logic to add interest rate to loan request
-                    UniversalResponse urMessage = URConversion(request, 2);
-
-                    //send message
-                    var message = Serializer.SerializeObjectToUniversal(urMessage);
-                    sendEnriched(Encoding.UTF8.GetBytes(message), ea.BasicProperties, Encoding.UTF8.GetString((byte[])ea.BasicProperties.Headers["reply"]));
-
-                    ///// send another message to another channel 
-
-                    channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
-                };
-                channel.BasicConsume(queue: "LoanRequestB2",
-                                     autoAck: false,
-                                     consumer: consumer);
-            }
-        }
+        
         public UniversalResponse URConversion(LoanRequest request, decimal interestRate)
         {
             UniversalResponse response = new UniversalResponse();

@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace WebBank
+namespace WebBankConsole
 {
     public class Serializer
     {
         public static string SerializeObjectToUniversal(object t)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(UniversalResponse));
+            XmlSerializer xml = new XmlSerializer(typeof(WebBankService.UniversalResponse));
             //XmlSerializer xml = new XmlSerializer(typeof(LoanRequest));
 
             using (StringWriter textwriter = new StringWriter())
@@ -24,12 +24,12 @@ namespace WebBank
             }
         }
 
-        public static LoanRequest DeserializeObjectFromXml(string xml)
+        public static WebBankService.LoanRequest DeserializeObjectFromXml(string xml)
         {
-            XmlSerializer dexml = new XmlSerializer(typeof(LoanRequest));
+            XmlSerializer dexml = new XmlSerializer(typeof(WebBankService.LoanRequest));
             using (TextReader reader = new StringReader(xml))
             {
-                return (LoanRequest)dexml.Deserialize(reader);
+                return (WebBankService.LoanRequest)dexml.Deserialize(reader);
             }
 
         }

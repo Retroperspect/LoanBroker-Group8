@@ -7,4 +7,20 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CompositeType" nillable="true" type="tns:CompositeType" />
+  <xs:complexType name="LoanRequest">
+    <xs:sequence>
+      <xs:element name="_x003C_CreditScore_x003E_k__BackingField" type="xs:int" />
+      <xs:element name="_x003C_LoanAmmount_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_LoanDuration_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_ssn_x003E_k__BackingField" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LoanRequest" nillable="true" type="tns:LoanRequest" />
+  <xs:complexType name="UniversalResponse">
+    <xs:sequence>
+      <xs:element name="_x003C_interestrate_x003E_k__BackingField" type="xs:decimal" />
+      <xs:element name="_x003C_ssn_x003E_k__BackingField" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UniversalResponse" nillable="true" type="tns:UniversalResponse" />
 </xs:schema>

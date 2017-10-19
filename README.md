@@ -30,7 +30,7 @@ This section will list and give an overview of all the systems that are integrat
 
 LoanBroker Systemoverview: [Overview][1].
 
-Message transformations through the system: Flow-Chart (Link).
+Message transformations through the system: [Message Transfomration](Documentation/MessageTransForm.md).
 
 List of all systems:
 - Website:

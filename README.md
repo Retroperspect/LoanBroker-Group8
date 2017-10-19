@@ -175,4 +175,4 @@ This section is to describe potential bottlenecks in our solution and what could
 ## Testability
 This section is to describe how testable our solution is (see pp440-443)
 
-[1]:
+[1]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/MessagingSystemOverview.png

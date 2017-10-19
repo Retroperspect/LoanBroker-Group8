@@ -24,5 +24,11 @@ var routes = Routes{
 		"/request",
 		RequestLoan,
 	},
+	Route{
+		"Request-Loan-PUT",
+		"PUT",
+		"/request",
+		RequestLoan,
+	},
 
 }

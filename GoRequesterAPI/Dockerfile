@@ -3,6 +3,7 @@ FROM golang:jessie
 # Install any needed dependencies...
 # RUN go get ...
 RUN go get github.com/gorilla/mux
+RUN go get github.com/streadway/amqp
 
 
 

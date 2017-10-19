@@ -1,4 +1,4 @@
-#Message Transformation Overview 
+# Message Transformation Overview 
 This is how the Message looks through the system.
 
 Website user starts request -> GoAPI -> RequestAPI

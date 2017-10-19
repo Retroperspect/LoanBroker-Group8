@@ -71,7 +71,7 @@ namespace RecipientList_Router
 
                         if (FullRequest.ViableBanks.Count == 0)
                         {
-                            var message = Encoding.UTF8.GetBytes("CreditScore is to low, no banks will take the loan request. Your CreditScore is: "+FullRequest.CreditScore);
+                            var message = Encoding.UTF8.GetBytes(Serializer.SerializeObjectToJsonType(new UniversalResponseFinal() { ssn = FullRequest.ssn, interestrate=100, bank="CreditScore Was to low: "+FullRequest.CreditScore }));
                             var properties = channel.CreateBasicProperties();
                             properties.Persistent = true;
                             properties.CorrelationId = ea.BasicProperties.CorrelationId;

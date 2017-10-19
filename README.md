@@ -28,7 +28,7 @@ We are also using Simple Object Acces Protocoll (SOAP) to integrate. We have 3 s
 ## Systems
 This section will list and give an overview of all the systems that are integrated to become a complete LoanBroker.
 
-LoanBroker Systemoverview: Overview (Link).
+LoanBroker Systemoverview: [Overview][1].
 
 Message transformations through the system: Flow-Chart (Link).
 
@@ -174,3 +174,5 @@ This section is to describe potential bottlenecks in our solution and what could
 
 ## Testability
 This section is to describe how testable our solution is (see pp440-443)
+
+[1]:

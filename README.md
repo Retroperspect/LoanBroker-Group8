@@ -27,6 +27,12 @@ We are also using Simple Object Acces Protocoll (SOAP) to integrate. We have 3 s
 
 ## Systems
 This section will list and give an overview of all the systems that are integrated to become a complete LoanBroker.
+
+LoanBroker Systemoverview: Overview (Link).
+
+Message transformations through the system: Flow-Chart (Link).
+
+List of all systems:
 - Website:
 ```
 Hosted on: AWS - IIS = IP:
@@ -163,3 +169,8 @@ Responseability: To determine the best response
 Integration Method: Messaging
 ```
 
+## Potential bottlenecks
+This section is to describe potential bottlenecks in our solution and what could be done to enhance the performance.
+
+## Testability
+This section is to describe how testable our solution is (see pp440-443)

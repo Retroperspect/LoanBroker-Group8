@@ -94,7 +94,7 @@ Hosted on: Localhost
 Programmed in: C# (Console app)
 Github folder: Loaner/RecipientList-Router/
 Responseability: To Route the requests to all egible bank translators.
-Integration Method: 
+Integration Method: Messaging
 ```
 - XML Translator
 ``` 
@@ -102,7 +102,7 @@ Hosted on: Localhost
 Programmed in: C# (Console app)
 Github folder: Loaner/XMLTranslator/
 Responseability: To translate the request to the banks prefered format and then send request to bank.
-Integration Method: 
+Integration Method: Messaging
 ```
 - JSON Translator
 ``` 
@@ -110,7 +110,7 @@ Hosted on: Localhost
 Programmed in: C# (Console app)
 Github folder: Loaner/JSONTranslator/
 Responseability: To translate the request to the banks prefered format and then send request to bank.
-Integration Method: 
+Integration Method: Messaging
 ```
 - WebBank Translator
 ``` 
@@ -118,7 +118,7 @@ Hosted on: Localhost
 Programmed in: C# (Console app)
 Github folder: Loaner/WebBankConsole/
 Responseability: To translate the request to the banks prefered format and then send request to bank.
-Integration Method: 
+Integration Method: Messaging
 ```
 - GoBank
 ``` 

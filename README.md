@@ -41,7 +41,7 @@ Hosted on: AWS - IIS = IP:
 Programmed in: Angular 2
 Github folder:
 Responseability: To handle user interaction (Front-End of LoanBroker)
-Integration Method: 
+Integration Method: RPI (restfull web api: Go Request API)
 ```
 - Go Request API
 ``` 
@@ -49,7 +49,7 @@ Hosted on: Digital Ocean - DockerContainer(go) = IP: http://165.227.151.217:8989
 Programmed in: Go
 Github folder: GoRequesterAPI
 Responseability: Interface for Website to communicate with LoanBroker backend.
-Integration Method: 
+Integration Method: Messaging
 ```
 - Loaner
 ``` 

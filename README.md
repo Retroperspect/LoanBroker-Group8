@@ -30,7 +30,7 @@ This section will list and give an overview of all the systems that are integrat
 
 LoanBroker Systemoverview: [Overview][1].
 
-Screendumps of running code: link here.
+Screendumps of running code: [Screendump][2].
 
 Message transformations through the system: [Message Transformation](Documentation/MessageTransform.md).
 
@@ -178,3 +178,4 @@ This section is to describe potential bottlenecks in our solution and what could
 This section is to describe how testable our solution is (see pp440-443)
 
 [1]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/MessagingSystemOverview.png
+[2]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/ScreenDumps.png

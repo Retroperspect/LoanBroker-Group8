@@ -7,7 +7,7 @@ This project is based of a project description, which can be found in the link b
 - [Project-Link](https://github.com/datsoftlyngby/soft2017fall-system-integration-teaching-material/blob/master/assignments/LoanBrokerProject.pdf)
 
 ## LoanBroker System
-The product of this project is a system that can take in loan requests, then contact banks which give back a response that the system, that then determines the best loan plan and then respond that to user. The system consists of alot of systems which needs to be integrated. A system for looking up a persons creditscore, a system that determines which banks would accept the request based on creditscore, systems to translate requests and contact the banks, a system that can normalize the responses, a system that can combine/aggregate all the responses for every request, a system that determines the best response, and ofcause a system that a user can request loans from. As described, alot of systems are at play in this project. we've chosen 2 ways of integrating all these systems together. The main way is by messaging, and the other way is with remote procedure invocation. Other ways to integrate systems, which we thought was not relevant or smart in our case is: File transfer and shared database.
+The product of this project is a system that can take in loan requests, then contact a number of banks, which then individually gives back a response to the system, The system then determines the best loan plan and relays that to the user. The system consists of alot of sub systems which needs to be integrated. A system for looking up a persons creditscore, a system that determines which banks would accept the request based on creditscore, a systems to translate requests and contact the banks, a system that can normalize the responses, a system that can combine/aggregate all the responses for every request, a system that determines the best response, and of cause a system that a user can request loans from. As described, alot of sub systems are at play in this project. we've chosen 2 ways of integrating all these systems together. The main way is by messaging, and the other way is with remote procedure invocation. Other ways to integrate systems, which we thought was not relevant or smart in our case is: File transfer and shared database.
 
 ## Integrating systems
 As mentined before, we have chosen 2 ways of integrating systems. By messaging and remote procedure invocations. 
@@ -28,7 +28,7 @@ We are also using Simple Object Acces Protocoll (SOAP) to integrate. We have 3 s
 ## Systems
 This section will list and give an overview of all the systems that are integrated to become a complete LoanBroker.
 
-LoanBroker Systemoverview: [Overview][1].
+LoanBroker System overview: [Overview][1].
 
 Screendumps of running code: [Screendump][2].
 
@@ -174,8 +174,12 @@ Integration Method: Messaging
 ## Potential bottlenecks
 This section is to describe potential bottlenecks in our solution and what could be done to enhance the performance.
 
+Since the system was not designed with multi threading or even load balancing, it's possible the aggregator would be overloaded with responses that it won't be able to handle to a certain level, although it does have the ability to handle multiple different loan requests with it's inbuild functions in the rabbitMQ client, it's not custom tailored to the specific requirements of the system, and since we havn't done extensive stress test, it's unknown how well it would be able to handle if incase more messages than the system can handle in time, as it could result in messages ending in side channel of being to slow and being lost to the user, as we don't look at this channel incase of message overload.
+
 ## Testability
 This section is to describe how testable our solution is (see pp440-443)
+
+Given the system consist of multiple sub systems, it's possible to build test cases for each individual sub system, and perform extensive load balance test, information malfunction tests and networking testing.
 
 [1]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/MessagingSystemOverview.png
 [2]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/ScreenDumps.png

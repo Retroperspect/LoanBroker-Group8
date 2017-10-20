@@ -1,0 +1,51 @@
+<p *ngIf="loanFetched">
+  Your result!
+  {{ currentLoanResponse }}
+</p>
+<section *ngIf="loanProgressing">
+	<p>Your request is being processed. Please wait!</p>
+  <img src="https://media.giphy.com/media/JWLebrfg8YJqw/giphy-downsized.gif" />
+
+</section>
+
+<div class="container">
+  <h1>Loan Form</h1>
+  <!-- (submit)="onSubmit()" -->
+  <form (submit)="onSubmit()" #loanForm="ngForm" novalidate>
+
+    <div class="form-group">
+      <label for="ssn1">Your Social Security First Digits</label>
+      <input  type="text" placeholder="yymmdd" class="form-control" id="ssn1" required minlength="6" maxlength="6"  [(ngModel)]="model.ssn1" name="ssn1" #ssn1Field="ngModel">
+	    <div class="alert alert-danger" *ngIf="(loanForm.submitted || ssn1Field.dirty || ssn1Field.touched) && ssn1Field.errors">
+            <div [hidden]="!ssn1Field.errors.required">Your Social Security Number is required</div>
+            <div [hidden]="!ssn1Field.errors.minlength">Your Social Security Number must be a minimum of 6 characters long</div>
+            <div [hidden]="!ssn1Field.errors.maxlength">Your Social Security Number must be a max of 6 characters long</div>
+        </div>     
+    </div>
+    <div class="form-group">
+      <label for="ssn2">Your Social Security Last Digits</label>
+	  	<input  type="text" placeholder="xxxx" class="form-control" id="ssn2" required minlength="4" maxlength="4"  [(ngModel)]="model.ssn2" name="ssn2" #ssn2Field="ngModel">
+	    <div class="alert alert-danger" *ngIf="(loanForm.submitted || ssn2Field.dirty || ssn2Field.touched) && ssn2Field.errors">
+            <div [hidden]="!ssn2Field.errors.required">Your Social Security Number is required</div>
+            <div [hidden]="!ssn2Field.errors.minlength">Your Social Security Number must be a minimum of 4 characters long</div>
+            <div [hidden]="!ssn2Field.errors.maxlength">Your Social Security Number must be a max of 4 characters long</div>
+
+        </div>
+	</div>  
+    <div class="form-group">
+      <label for="author">Desired Amount</label>
+      <input type="number" class="form-control" id="amount" required [(ngModel)]="model.amount" name="amount" #amountField="ngModel">
+	  	<div class="alert alert-danger" *ngIf="(loanForm.submitted || amountField.dirty || amountField.touched) && amountField.errors">
+			<div [hidden]="!amountField.errors.required">Desired Amount is required</div>
+		</div>
+    </div>
+    <div class="form-group">
+      <label for="url">Terms in (number of weeks)</label>
+      <input type="number" class="form-control" id="url" required [(ngModel)]="model.terms" name="terms" #termsField="ngModel">
+		<div class="alert alert-danger" *ngIf="(loanForm.submitted || termsField.dirty || termsField.touched) && termsField.errors">
+			<div [hidden]="!termsField.errors.required">Terms is required</div>
+		</div>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+   </form>
+ </div>

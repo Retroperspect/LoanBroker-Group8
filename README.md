@@ -176,6 +176,8 @@ This section is to describe potential bottlenecks in our solution and what could
 
 Since the system was not designed with multi threading or even load balancing, it's possible the aggregator would be overloaded with responses that it won't be able to handle to a certain level, although it does have the ability to handle multiple different loan requests with it's inbuild functions in the rabbitMQ client, it's not custom tailored to the specific requirements of the system, and since we havn't done extensive stress test, it's unknown how well it would be able to handle if incase more messages than the system can handle in time, as it could result in messages ending in side channel of being to slow and being lost to the user, as we don't look at this channel incase of message overload.
 
+A solution to this would be a sub system, that handles messages before the aggregator handles them, given we tag each request with a header that identify what group they belong to, we can have this middleman sub system control and redirect the messages to multiple aggregators, which would eliminate to possibility of multiple aggregators consuming eachothers messages, and also improve the performances of the unscalable aggregator sub system.
+
 ## Testability
 This section is to describe how testable our solution is (see pp440-443)
 

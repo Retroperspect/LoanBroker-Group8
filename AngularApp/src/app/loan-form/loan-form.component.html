@@ -1,7 +1,9 @@
-<p *ngIf="loanFetched">
-  Your result!
-  {{ currentLoanResponse }}
-</p>
+<section *ngIf="loanFetched">
+  <p>Your result!</p>
+  <p>{{ loans.ssn }}</p>
+  <p>{{ loans.bank }}</p>
+  <p>{{ loans.interestrate }}</p>
+</section>
 <section *ngIf="loanProgressing">
 	<p>Your request is being processed. Please wait!</p>
   <img src="https://media.giphy.com/media/JWLebrfg8YJqw/giphy-downsized.gif" />

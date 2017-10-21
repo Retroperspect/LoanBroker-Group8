@@ -16,7 +16,7 @@ export class LoanFormComponent implements OnInit {
   loanProgressing = false;
   loanFetched = false;
   //loans:LoanResponse[];
-  loans:string;
+  loans:LoanResponse;
 
   ngOnInit() {
   }
@@ -34,7 +34,6 @@ export class LoanFormComponent implements OnInit {
 		console.log(this.model.ssn1+'-'+this.model.ssn2);
 		console.log(this.model.amount);
 		console.log(this.model.terms);
-		this.loanForm.resetForm();
 		
 
 		/*hide form*/
@@ -45,6 +44,7 @@ export class LoanFormComponent implements OnInit {
 		console.log('posting..');
 		
 		var s = {"ssn": this.model.ssn1+'-'+this.model.ssn2, "amount": this.model.amount, "term": this.model.terms};
+		this.loanForm.resetForm();
 
 		this.loanService.postLoan(s)
 			.then( loans => { 
@@ -53,12 +53,16 @@ export class LoanFormComponent implements OnInit {
 				this.loans = loans;
 				this.loanProgressing = false;
 				this.loanFetched = true;
+				console.log('resonse 1');				
 			}, reason => {
+				//this.loans = reason;
+
+				console.log('resonse 2');
 				console.error( 'onRejected function called: ', reason );
-				this.loans = reason;
+				//this.loans.ssn = 'Something went wrong when processing your loan request. Please try again!';
 				this.loanProgressing = false;
 				this.loanFetched = true;
-		});
+			});
 
        
     }

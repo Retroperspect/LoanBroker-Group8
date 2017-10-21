@@ -3,13 +3,15 @@ package main
 import (
 	"log"
 	"net/http"
+	"github.com/rs/cors"
 )
 
 func main() {
 
 	router := NewRouter()
 
-	log.Fatal(http.ListenAndServe(":8989", router))
+	handler := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":8989", handler))
 
 }
 

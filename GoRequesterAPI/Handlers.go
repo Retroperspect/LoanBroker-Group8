@@ -11,7 +11,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func RequestLoan(w http.ResponseWriter, r *http.Request){
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Allow-Controll-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "text/plain")
+
+	w.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Origin ,Accept, Content-Type, Content-Length, Accept-Encoding")
+	if origin := r.Header.Get("Origin"); origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+	} else { w.Header().Set("Access-Control-Allow-Origin", "*")}
 	SendEnriched(w, r)
 
 	doLongOperation(w, r)

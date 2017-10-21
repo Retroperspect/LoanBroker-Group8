@@ -39,7 +39,7 @@ List of all systems:
 ```
 Hosted on: AWS - IIS = IP:
 Programmed in: Angular 2
-Github folder:
+Github folder: AngularApp
 Responseability: To handle user interaction (Front-End of LoanBroker)
 Integration Method: RPI (restfull web api: Go Request API)
 ```

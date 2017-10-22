@@ -182,7 +182,7 @@ A solution to this would be a sub system, that handles messages before the aggre
 Given the system consist of multiple sub systems, it's possible to build test cases for each individual sub system, and perform extensive load balance test, information malfunction tests and networking testing.
 
 Incase you wish to test the system yourself, make sure to have all system running before you attempt to use the browser to do a loan request to the system.
-Our setup is using visual studio to run the solution loan broker including all projects except the loaner library, also running get banks and web bank solutions in visual studio aswell, lastly start up go bank using GO statement with a terminal of your choice, we use git bash with the GO extention, to deploy GOAPI build dockerimage using dockerfile then run dockerimages and expose port 8989.
+Our setup is using visual studio to run the solution loan broker including all projects except the loaner library, also running get banks and web bank solutions in visual studio aswell, lastly start up go bank using GO statement with a terminal of your choice, we use git bash with the GO extention, to deploy GOAPI build dockerimage using dockerfile then run dockerimages with the following command and expose port 8989.
 ```
 docker run -d -ti -p 8989:8989 danielhauge/loanapi:latest
 ```

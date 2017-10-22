@@ -186,6 +186,9 @@ Our setup is using visual studio to run the solution loan broker including all p
 ```
 docker run -d -ti -p 8989:8989 [insert user name]/[insert image name]:latest
 ```
+Lastly, the website. It is deployed on a AWS IIS server, but can be deployed locally for testing purposes.
+
+Note: That if you wish to run things yourself, and test solution for own system. You might need to change a few things: Most noticeably the RabbitMQ connections(And perhaps channel names), the websites web api reference, and SOAP references in GetBanks and WebBankConsole.
 
 [1]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/MessagingSystemOverview.png
 [2]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/ScreenDumps.png

@@ -179,9 +179,11 @@ Since the system was not designed with multi threading or even load balancing, i
 A solution to this would be a sub system, that handles messages before the aggregator handles them, given we tag each request with a header that identify what group they belong to, we can have this middleman sub system control and redirect the messages to multiple aggregators, which would eliminate to possibility of multiple aggregators consuming eachothers messages, and also improve the performances of the unscalable aggregator sub system.
 
 ## Testability
-This section is to describe how testable our solution is (see pp440-443)
-
 Given the system consist of multiple sub systems, it's possible to build test cases for each individual sub system, and perform extensive load balance test, information malfunction tests and networking testing.
+
+Incase you wish to test the system yourself, make sure to have all system running before you attempt to use the browser to do a loan request to the system.
+Our setup is using visual studio to run the solution loan broker including all projects except the loaner library, also running get banks and web bank solutions in visual studio aswell, lastly start up go bank using GO statement with a terminal of your choice, we use git bash with the GO extention, to deploy GOAPI build dockerimage using dockerfile then run dockerimages and expose port 8989.
+docker run -d -ti -p 8989:8989 danielhauge/loanapi:latest```
 
 [1]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/MessagingSystemOverview.png
 [2]:https://github.com/Retroperspect/LoanBroker-Group8/blob/master/Documentation/ScreenDumps.png
